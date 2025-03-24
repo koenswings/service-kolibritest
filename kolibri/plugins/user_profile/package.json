@@ -4,6 +4,6 @@
     "private": true,
     "version": "0.0.1",
     "dependencies": {
-      "xstate": "^4.38.3"
+      "xstate": "^5.19.2"
     }
 }
