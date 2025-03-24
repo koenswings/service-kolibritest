@@ -4,7 +4,9 @@
 
 FROM ubuntu:jammy AS base
 
-ENV NODE_VERSION=18.19.0
+# Updated node version to fix package dependency error
+#ENV NODE_VERSION=18.19.0
+ENV NODE_VERSION=18.20.0
 
 # install required packages
 RUN apt-get update && \
