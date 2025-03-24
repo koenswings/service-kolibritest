@@ -2,9 +2,9 @@
 # base
 #####
 
-FROM ubuntu:jammy as base
+FROM ubuntu:jammy AS base
 
-ENV NODE_VERSION=18.19.0
+ENV NODE_VERSION=18.20.0
 
 # install required packages
 RUN apt-get update && \
@@ -53,7 +53,7 @@ RUN cd /kolibri \
 #######
 
 #FROM learningequality/kolibribase
-FROM base as dev
+FROM base AS dev
 
 
 ENV KOLIBRI_RUN_MODE=devserver
