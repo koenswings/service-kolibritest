@@ -80,7 +80,7 @@
     "kolibri-design-system": "5.0.1",
     "lockr": "0.8.5",
     "lodash": "^4.17.21",
-    "path-to-regexp": "1.9.0",
+    "path-to-regexp": "8.2.0",
     "ua-parser-js": "^1.0.40",
     "vue": "2.7.16",
     "vue-intl": "3.1.0",
