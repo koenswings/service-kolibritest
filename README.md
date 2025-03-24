@@ -1,5 +1,5 @@
 # service-kolibritest
 Build files for the Kolibri service.
 
-Based on v0.17.5
+Based on v0.18.0-beta1
 

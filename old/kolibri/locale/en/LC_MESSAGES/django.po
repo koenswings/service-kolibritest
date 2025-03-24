@@ -1,0 +1,439 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-12 04:17-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: core/auth/constants/commands_errors.py:17
+msgid "Unexpected exception [{}]: {}"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:20
+msgctxt ""
+"Error report message when the allowed number of digits has been exceeded."
+msgid "Content of cell '{}' is too long"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:24
+msgctxt "Error report message when the cell contains an improper data format."
+msgid "Content of cell '{}' is not valid"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:26
+msgid "Duplicated username"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:28
+#: core/auth/management/commands/bulkimportusers.py:85
+msgid "Username only can contain characters, numbers and underscores"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:30
+msgid "The column '{}' is required"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:31
+msgid "Mix of valid and/or invalid header labels found in first row"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:33
+msgid ""
+"No default facility exists. Make sure to set up a facility on the device "
+"before running this command"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:35
+#: core/auth/management/commands/bulkimportusers.py:99
+msgid "Error trying to read csv file: {}"
+msgstr ""
+
+#: core/auth/constants/commands_errors.py:36
+#: core/auth/management/commands/bulkimportusers.py:100
+msgid "Error trying to write csv file: {}"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:46
+#: core/auth/management/commands/bulkexportusers.py:123
+msgid "Database ID ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:47
+#: core/auth/management/commands/bulkexportusers.py:124
+msgid "Username ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:48
+#: core/auth/management/commands/bulkexportusers.py:125
+msgid "Password ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:49
+#: core/auth/management/commands/bulkexportusers.py:126
+msgid "Full name ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:54
+msgctxt "CSV column header for the type of user: ADMIN, LEARNER, COACH..."
+msgid "User type ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:57
+#: core/auth/management/commands/bulkexportusers.py:134
+msgid "Identifier ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:58
+#: core/auth/management/commands/bulkexportusers.py:135
+msgid "Birth year ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:59
+#: core/auth/management/commands/bulkexportusers.py:136
+msgid "Gender ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:64
+msgctxt ""
+"CSV column header for the list of classrooms names where the learner is "
+"going to be enrolled"
+msgid "Learner enrollment ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:71
+msgctxt ""
+"CSV column header for the list of classrooms names where the tutor is going "
+"to be a coach"
+msgid "Coach assignment ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:131
+msgctxt "CSV header for the type of user: ADMIN, LEARNER, COACH..."
+msgid "User type ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:141
+msgctxt ""
+"CSV file header for the list of classrooms names where the learner is going "
+"to be enrolled"
+msgid "Learner enrollment ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkexportusers.py:148
+msgctxt ""
+"CSV file header for the list of classrooms names where the tutor is going to "
+"be a coach"
+msgid "Coach assignment ({})"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:76
+msgctxt ""
+"Error message that might appear when there's a programming error importing a "
+"CSV file"
+msgid "Unexpected error [{}]: {}"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:80
+msgctxt "Error when the command is executed in the Terminal (command prompt)"
+msgid "Value in column '{}' has too many characters"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:82
+msgid "Value in column '{}' not valid"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:83
+msgid "Username is duplicated"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:89
+msgctxt ""
+"Error message indicating that the CSV file selected for import is missing a "
+"required column"
+msgid "The column '{}' is required"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:93
+msgctxt ""
+"Error message indicating that one column header in the CSV file selected for "
+"import is missing or incorrect"
+msgid "Incorrect header label found in the first row"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:97
+msgctxt "Error when the command is executed in the Terminal (command prompt)"
+msgid ""
+"No default facility exists. Make sure to set up a facility on the  device "
+"before importing users and classes"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:102
+msgid ""
+"The password field is required. To leave the password unchanged in existing "
+"users, insert an asterisk (*)"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:105
+msgid ""
+"Cannot update user with ID: '{}' because no user with that database ID "
+"exists in this facility"
+msgstr ""
+
+#: core/auth/management/commands/bulkimportusers.py:107
+msgid "Database ID is not valid"
+msgstr ""
+
+#. Translators: A notification title shown to users when their Kolibri device is syncing data to another Kolibri instance
+#: core/auth/tasks.py:56
+msgid "Data syncing in progress"
+msgstr ""
+
+#. Translators: Notification text shown to users when their Kolibri device is syncing data to another Kolibri instance
+#. to encourage them to stay connected to their network to ensure a successful sync.
+#: core/auth/tasks.py:60
+msgid "Do not disconnect your device from the network."
+msgstr ""
+
+#: core/content/api.py:418
+msgid "Resource"
+msgstr ""
+
+#: core/content/api.py:1780
+msgid "The requested channel does not exist on the content server"
+msgstr ""
+
+#: core/content/models.py:282
+msgid "Unknown format"
+msgstr ""
+
+#. Translators: Message shown to an App user when the device's library is being updated
+#. either with new resources, or unwanted resources being deleted.
+#: core/content/tasks.py:57
+msgid "Updating your library"
+msgstr ""
+
+#. Translators: Message shown to an App user when an update to the library has been successful.
+#: core/content/tasks.py:60
+msgid "Library updated"
+msgstr ""
+
+#. Translators: Message shown to an App user when an update to the library has failed.
+#: core/content/tasks.py:63
+msgid "Library update failed"
+msgstr ""
+
+#: core/device/serializers.py:48
+msgid "Language is not supported by Kolibri"
+msgstr ""
+
+#. Translators: A notification title shown to users when Kolibri is looking for other Kolibri devices on the network.
+#: core/device/task_notifications.py:11
+msgid "Searching"
+msgstr ""
+
+#. Translators: Notification text shown to users when Kolibri is looking for other Kolibri devices on the network.
+#: core/device/task_notifications.py:13
+msgid "Looking for other Kolibri devices"
+msgstr ""
+
+#: core/logger/csv_export.py:69
+msgid "Facility name"
+msgstr ""
+
+#: core/logger/csv_export.py:70
+msgid "Username"
+msgstr ""
+
+#: core/logger/csv_export.py:71
+msgid "Channel id"
+msgstr ""
+
+#: core/logger/csv_export.py:72
+msgid "Channel name"
+msgstr ""
+
+#: core/logger/csv_export.py:73
+msgid "Content id"
+msgstr ""
+
+#: core/logger/csv_export.py:74
+msgid "Content title"
+msgstr ""
+
+#: core/logger/csv_export.py:79
+msgctxt ""
+"CSV column header for the time of the first interaction in the exported logs"
+msgid "Time of first interaction"
+msgstr ""
+
+#: core/logger/csv_export.py:86
+msgctxt ""
+"CSV column header for the time of the last interaction in the exported logs"
+msgid "Time of last interaction"
+msgstr ""
+
+#: core/logger/csv_export.py:93
+msgctxt ""
+"CSV column header for the percentage of completion in the exported logs"
+msgid "Time of completion"
+msgstr ""
+
+#: core/logger/csv_export.py:100
+msgctxt ""
+"CSV column header for the time spent in a resource in the exported logs"
+msgid "Time Spent (sec)"
+msgstr ""
+
+#: core/logger/csv_export.py:103
+msgid "Progress (0-1)"
+msgstr ""
+
+#: core/logger/csv_export.py:104
+msgid "Content kind"
+msgstr ""
+
+#. Translators: Message shown to indicate that a background process has finished successfully.
+#: core/tasks/job.py:89
+msgid "Complete"
+msgstr ""
+
+#. Translators: Message shown to indicate that a background process has failed.
+#: core/tasks/job.py:92
+msgid "Failed"
+msgstr ""
+
+#. Translators: Message shown to indicate that a background process has been cancelled.
+#: core/tasks/job.py:95
+msgid "Cancelled"
+msgstr ""
+
+#. Translators: Message shown to indicate the percentage completed of a background process.
+#: core/tasks/job.py:98
+#, python-brace-format
+msgid "In progress - {percent}%"
+msgstr ""
+
+#. Translators: Message shown to indicate that while a background process has started, no progress can be reported yet.
+#: core/tasks/job.py:102
+msgid "Waiting"
+msgstr ""
+
+#: core/templates/kolibri/loading_page.html:8
+msgid "Kolibri is starting"
+msgstr ""
+
+#: core/templates/kolibri/loading_page.html:87
+msgid "Starting Kolibri"
+msgstr ""
+
+#: core/templates/kolibri/loading_page.html:89
+msgid "You should be automatically redirected when Kolibri is ready"
+msgstr ""
+
+#: core/templates/kolibri/loading_page.html:90
+msgid "If not, please ask for help in our community forums"
+msgstr ""
+
+#: core/templates/kolibri/loading_page.html:91
+msgid "Refresh page"
+msgstr ""
+
+#: core/templates/kolibri/unsupported_browser.html:42
+msgid "Unsupported browser"
+msgstr ""
+
+#: core/templates/kolibri/unsupported_browser.html:43
+msgid "Sorry, your browser version is not supported."
+msgstr ""
+
+#: core/templates/kolibri/unsupported_browser.html:44
+msgid "To use Kolibri, we recommend using Firefox or Chrome."
+msgstr ""
+
+#: core/templates/kolibri/unsupported_browser.html:45
+msgid "You can also try updating your current browser."
+msgstr ""
+
+#: core/templatetags/core_tags.py:84
+msgid "Kolibri"
+msgstr ""
+
+#: core/views.py:184
+msgid ""
+"No appropriate redirect pages found. It is likely that Kolibri is badly "
+"configured"
+msgstr ""
+
+#: plugins/coach/kolibri_plugin.py:27
+msgid "Coach"
+msgstr ""
+
+#: plugins/facility/kolibri_plugin.py:22
+msgid "Facility"
+msgstr ""
+
+#: plugins/facility/views.py:151
+msgctxt ""
+"Default name for the exported CSV file with content session logs. Please "
+"keep the underscores between words in the translation"
+msgid "content_session_logs_from_"
+msgstr ""
+
+#: plugins/facility/views.py:158 plugins/facility/views.py:176
+msgctxt ""
+"Default name for the exported CSV file with content summary logs. Please "
+"keep the underscores between words in the translation"
+msgid "to_"
+msgstr ""
+
+#: plugins/facility/views.py:169
+msgctxt ""
+"Default name for the exported CSV file with content summary logs. Please "
+"keep the underscores between words in the translation"
+msgid "content_summary_logs_from_"
+msgstr ""
+
+#: plugins/facility/views.py:187
+msgctxt ""
+"Default name for the exported CSV file of facility user data. Please keep "
+"the underscore between words in the translation"
+msgid "users"
+msgstr ""
+
+#: plugins/learn/kolibri_plugin.py:35
+msgid "Learn"
+msgstr ""
+
+#: plugins/policies/kolibri_plugin.py:21
+msgid "Policies"
+msgstr ""
+
+#: plugins/setup_wizard/kolibri_plugin.py:23
+msgid "Setup Wizard"
+msgstr ""
+
+#: plugins/user_profile/kolibri_plugin.py:24
+msgid "User Profile"
+msgstr ""
+
+#. Translators: A notification title shown to users when their learner account is joining a new learning facility.
+#: plugins/user_profile/tasks.py:84
+msgid "Account transfer in progress"
+msgstr ""
+
+#: plugins/user_profile/tasks.py:87
+#, python-brace-format
+msgid "Moving {learner_name} to learning facility {facility_name}"
+msgstr ""

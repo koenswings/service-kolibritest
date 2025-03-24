@@ -1,0 +1,32 @@
+# Automatically update versions for npm
+
+version: 2
+updates:
+
+  # Maintain dependencies for Javascript
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "00:00"
+    open-pull-requests-limit: 10
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
+      khanacademy:
+        patterns:
+          - "@khanacademy/*"
+
+  # Maintain dependencies for Github Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "00:00"
+    groups:
+      github:
+        patterns:
+          - "actions/*"

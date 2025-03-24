@@ -1,0 +1,60 @@
+name: Licenses
+
+on:
+  push:
+    branches:
+    - develop
+    - 'release-v**'
+  pull_request:
+    branches:
+    - develop
+    - 'release-v**'
+
+jobs:
+  pre_job:
+    name: Path match check
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          github_token: ${{ github.token }}
+          paths: '["requirements/*.txt", "package.json", "**/package.json", "yarn.lock", "test/conditional/test_licenses.sh", ".github/workflows/check_licenses.yml"]'
+  licenses:
+    name: Licenses check
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+    - name: Cache Node.js modules
+      uses: actions/cache@v4
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        # Use a Python virtual environment to ensure
+        # our license check is only for packages
+        # explicitly installed for Kolibri
+        python -m venv ./virtualenv_dir
+        source ./virtualenv_dir/bin/activate
+        python -m pip install --upgrade pip
+        # Actually install all our requirements before doing a license check
+        pip install -r requirements.txt
+        yarn --frozen-lockfile
+        npm rebuild node-sass
+    - name: Check Licenses
+      run: ./test/conditional/test_licenses.sh
