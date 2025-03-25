@@ -3,6 +3,8 @@ import pick from 'lodash/pick';
 import client from 'kolibri/client';
 import heartbeat from 'kolibri/heartbeat';
 import logger from 'kolibri-logging';
+import FacilityResource from 'kolibri-common/apiResources/FacilityResource';
+import FacilityDatasetResource from 'kolibri-common/apiResources/FacilityDatasetResource';
 import UserSyncStatusResource from 'kolibri-common/apiResources/UserSyncStatusResource';
 import { setServerTime } from 'kolibri/utils/serverClock';
 import urls from 'kolibri/urls';
@@ -159,6 +161,42 @@ const _setPageVisibility = debounce((store, visibility) => {
 
 export function setPageVisibility(store) {
   _setPageVisibility(store, document.visibilityState === 'visible');
+}
+
+export function getFacilities(store) {
+  return FacilityResource.fetchCollection({ force: true }).then(facilities => {
+    store.commit('CORE_SET_FACILITIES', [...facilities]);
+  });
+}
+
+export function getFacilityConfig(store, facilityId) {
+  const { userFacilityId, selectedFacility } = store.getters;
+  const facId = facilityId || userFacilityId;
+  if (!facId) {
+    // No facility Id, so nothing good is going to happen here.
+    // Redirect and let Kolibri sort it out.
+    return Promise.resolve(redirectBrowser());
+  }
+  let datasetPromise;
+  if (selectedFacility && typeof selectedFacility.dataset !== 'object') {
+    datasetPromise = Promise.resolve([selectedFacility.dataset]);
+  } else {
+    datasetPromise = FacilityDatasetResource.fetchCollection({
+      getParams: {
+        // fetchCollection for currentSession's facilityId if none was passed
+        facility_id: facId,
+      },
+    });
+  }
+
+  return datasetPromise.then(facilityConfig => {
+    let config = {};
+    const facility = facilityConfig[0];
+    if (facility) {
+      config = { ...facility };
+    }
+    store.commit('CORE_SET_FACILITY_CONFIG', config);
+  });
 }
 
 export function loading(store) {

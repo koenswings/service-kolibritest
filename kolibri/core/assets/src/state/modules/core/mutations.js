@@ -1,4 +1,10 @@
 export default {
+  CORE_SET_FACILITY_CONFIG(state, facilityConfig) {
+    state.facilityConfig = facilityConfig;
+  },
+  CORE_SET_FACILITIES(state, facilities) {
+    state.facilities = facilities;
+  },
   CORE_SET_PAGE_LOADING(state, value) {
     const update = { loading: value };
     if (value) {

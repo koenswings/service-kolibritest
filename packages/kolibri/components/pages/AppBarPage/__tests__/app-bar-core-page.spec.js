@@ -35,12 +35,8 @@ describe('AppBarPage', () => {
     }));
   });
   describe('AppBar & optional sub-nav slot display', () => {
-    it('should render the AppBar component with the given title prop', async () => {
-      const wrapper = createWrapper({ propsData: { title: 'Test Title', loading: false } });
-      // set AppBar data prop appBarWidth to 1800 so that the full title is displayed
-      const appBar = wrapper.findComponent({ name: 'AppBar' });
-      appBar.setData({ appBarWidth: 1800 });
-      await appBar.vm.$nextTick();
+    it('should render the AppBar component with the given title prop', () => {
+      const wrapper = createWrapper({ propsData: { title: 'Test Title' } });
       expect(wrapper.findComponent({ name: 'AppBar' }).element).toHaveTextContent('Test Title');
     });
     it("should pass a given `subNav` slot content to the AppBar's `sub-nav` slot", () => {

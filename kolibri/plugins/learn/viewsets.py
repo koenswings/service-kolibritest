@@ -191,7 +191,6 @@ class LearnerClassroomViewset(ReadOnlyValuesViewset):
                 "data_model_version",
                 "score",
                 "question_sources",
-                "instant_report_visibility",
             )
         )
         exam_node_ids = set()

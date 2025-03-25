@@ -1,4 +1,3 @@
-import { computed } from 'vue';
 import { mount, createLocalVue } from '@vue/test-utils';
 import MergeDifferentAccounts from '../index.vue';
 import * as useRemoteFacility from '../../../../composables/useRemoteFacility';
@@ -18,12 +17,14 @@ function makeWrapper({ targetFacility, targetAccount, fullname, username } = {})
         send: sendMachineEvent,
         state: { value: 'requireAccountCreds' },
       },
-      state: computed(() => ({
-        targetFacility,
-        targetAccount,
-        fullname,
-        username,
-      })),
+      state: {
+        value: {
+          targetFacility,
+          targetAccount,
+          fullname,
+          username,
+        },
+      },
     },
     localVue,
   });

@@ -273,13 +273,6 @@ class Job(object):
             if self.storage.check_job_canceled(self.job_id):
                 raise UserCancelledError()
 
-    def is_cancelled(self):
-        try:
-            self.check_for_cancel()
-            return False
-        except (UserCancelledError, KeyError):
-            return True
-
     def save_as_cancellable(self, cancellable=True):
         # if we're not changing cancellability then ignore
         if self.cancellable == cancellable:

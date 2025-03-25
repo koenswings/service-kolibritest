@@ -5,13 +5,10 @@ import router from 'kolibri/router';
 import ChannelResource from 'kolibri-common/apiResources/ChannelResource';
 import KolibriApp from 'kolibri-app';
 import useSnackbar from 'kolibri/composables/useSnackbar';
-import useFacilities from 'kolibri-common/composables/useFacilities';
 import { PageNames } from './constants';
 import routes from './routes';
 import pluginModule from './modules/pluginModule';
 import HomeActivityPage from './views/home/HomeActivityPage';
-
-const { getFacilities, facilities } = useFacilities();
 
 function _channelListState(data) {
   return data.map(channel => ({
@@ -62,28 +59,19 @@ class CoachToolsModule extends KolibriApp {
       const skipLoading = [
         PageNames.EXAM_CREATION_ROOT,
         PageNames.QUIZ_SECTION_EDITOR,
+        PageNames.QUIZ_REPLACE_QUESTIONS,
         PageNames.QUIZ_SELECT_PRACTICE_QUIZ,
         PageNames.QUIZ_SELECT_RESOURCES,
-        PageNames.QUIZ_SELECT_RESOURCES_INDEX,
-        PageNames.QUIZ_SELECT_RESOURCES_BOOKMARKS,
-        PageNames.QUIZ_SELECT_RESOURCES_TOPIC_TREE,
-        PageNames.QUIZ_PREVIEW_SELECTED_RESOURCES,
-        PageNames.QUIZ_SELECT_RESOURCES_SETTINGS,
-        PageNames.QUIZ_SELECT_RESOURCES_SEARCH,
-        PageNames.QUIZ_SELECT_RESOURCES_SEARCH_RESULTS,
-        PageNames.QUIZ_PREVIEW_RESOURCE,
-        PageNames.QUIZ_SELECT_RESOURCES_LANDING_SETTINGS,
         PageNames.QUIZ_SECTION_ORDER,
         PageNames.QUIZ_BOOK_MARKED_RESOURCES,
-        PageNames.QUIZ_PREVIEW_SELECTED_QUESTIONS,
         PageNames.QUIZ_LEARNER_REPORT,
         PageNames.LESSON_SUMMARY,
+        PageNames.LESSON_SUMMARY_BETTER,
         PageNames.LESSON_SELECT_RESOURCES,
-        PageNames.LESSON_SELECT_RESOURCES_PREVIEW_SELECTION,
-        PageNames.LESSON_SELECT_RESOURCES_PREVIEW_RESOURCE,
+        PageNames.LESSON_EDIT_DETAILS_BETTER,
+        PageNames.LESSON_PREVIEW_SELECTED_RESOURCES,
+        PageNames.LESSON_PREVIEW_RESOURCE,
         PageNames.LESSON_SELECT_RESOURCES_INDEX,
-        PageNames.LESSON_SELECT_RESOURCES_SEARCH,
-        PageNames.LESSON_SELECT_RESOURCES_SEARCH_RESULTS,
         PageNames.LESSON_SELECT_RESOURCES_BOOKMARKS,
         PageNames.LESSON_SELECT_RESOURCES_TOPIC_TREE,
       ];
@@ -117,35 +105,21 @@ class CoachToolsModule extends KolibriApp {
         to.name &&
         [
           PageNames.EXAMS_ROOT,
-          PageNames.EXAM_CREATION_ROOT,
           PageNames.LESSONS_ROOT,
           PageNames.LESSON_CREATION_ROOT,
           PageNames.LESSON_SUMMARY,
           PageNames.LESSON_EDIT_DETAILS,
+          PageNames.LESSON_RESOURCE_SELECTION_ROOT,
+          PageNames.LESSON_RESOURCE_SELECTION,
+          PageNames.LESSON_RESOURCE_SELECTION_SEARCH,
+          PageNames.LESSON_SELECTION_BOOKMARKS,
+          PageNames.LESSON_SELECTION_BOOKMARKS_MAIN,
+          PageNames.LESSON_RESOURCE_SELECTION_CONTENT_PREVIEW,
           PageNames.RESOURCE_CONTENT_PREVIEW,
           PageNames.GROUP_SUMMARY,
           PageNames.GROUP_ENROLL,
           PageNames.GROUPS_ROOT,
           PageNames.HOME_PAGE,
-          PageNames.LESSON_SELECT_RESOURCES,
-          PageNames.LESSON_SELECT_RESOURCES_PREVIEW_SELECTION,
-          PageNames.LESSON_SELECT_RESOURCES_PREVIEW_RESOURCE,
-          PageNames.LESSON_SELECT_RESOURCES_INDEX,
-          PageNames.LESSON_SELECT_RESOURCES_SEARCH,
-          PageNames.LESSON_SELECT_RESOURCES_SEARCH_RESULTS,
-          PageNames.LESSON_SELECT_RESOURCES_BOOKMARKS,
-          PageNames.LESSON_SELECT_RESOURCES_TOPIC_TREE,
-          PageNames.QUIZ_SELECT_RESOURCES,
-          PageNames.QUIZ_SELECT_RESOURCES_INDEX,
-          PageNames.QUIZ_SELECT_RESOURCES_BOOKMARKS,
-          PageNames.QUIZ_SELECT_RESOURCES_TOPIC_TREE,
-          PageNames.QUIZ_PREVIEW_SELECTED_RESOURCES,
-          PageNames.QUIZ_PREVIEW_SELECTED_QUESTIONS,
-          PageNames.QUIZ_SELECT_RESOURCES_SETTINGS,
-          PageNames.QUIZ_SELECT_RESOURCES_SEARCH,
-          PageNames.QUIZ_SELECT_RESOURCES_SEARCH_RESULTS,
-          PageNames.QUIZ_PREVIEW_RESOURCE,
-          PageNames.QUIZ_SELECT_RESOURCES_LANDING_SETTINGS,
           HomeActivityPage.name,
         ].includes(to.name)
       ) {
@@ -163,8 +137,8 @@ class CoachToolsModule extends KolibriApp {
         promises.push(this.store.dispatch('initClassInfo', to.params.classId));
       }
 
-      if (get(isSuperuser) && facilities.value.length === 0) {
-        promises.push(getFacilities().catch(() => {}));
+      if (get(isSuperuser) && this.store.state.core.facilities.length === 0) {
+        promises.push(this.store.dispatch('getFacilities').catch(() => {}));
       }
 
       if (promises.length > 0) {

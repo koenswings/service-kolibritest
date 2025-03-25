@@ -33,13 +33,12 @@
                   :key="tableRow.id"
                 >
                   <td>
-                    <span v-if="quizLessonNotStarted(tableRow.status)">
-                      <KIcon icon="lesson" />
-                      {{ tableRow.title }}
-                    </span>
                     <KRouterLink
-                      v-else
-                      :to="lessonLink(tableRow.id)"
+                      :to="
+                        classRoute('ReportsLearnerReportLessonPage', {
+                          lessonId: tableRow.id,
+                        })
+                      "
                       :text="tableRow.title"
                       icon="lesson"
                     />
@@ -89,12 +88,7 @@
                   :key="tableRow.id"
                 >
                   <td>
-                    <span v-if="quizLessonNotStarted(tableRow.statusObj.status)">
-                      <KIcon icon="quiz" />
-                      {{ tableRow.title }}
-                    </span>
                     <KRouterLink
-                      v-else
                       :to="quizLink(tableRow.id)"
                       :text="tableRow.title"
                       icon="quiz"
@@ -129,7 +123,6 @@
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import commonCoach from '../../common';
   import CoachAppBarPage from '../../CoachAppBarPage';
-  import { STATUSES } from '../../../modules/classSummary/constants';
   import { PageNames } from '../../../constants';
   import ReportsControls from '../../common/ReportsControls';
   import CSVExporter from '../../../csv/exporter';
@@ -197,16 +190,7 @@
         return this.getLearnersForExam(quiz).includes(this.learner.id);
       },
       quizLink(quizId) {
-        return this.classRoute(PageNames.QUIZ_LEARNER_REPORT, {
-          quizId,
-          learnerId: this.learner.id,
-          questionId: 0,
-          interactionIndex: 0,
-          tryIndex: 0,
-        });
-      },
-      lessonLink(lessonId) {
-        return this.classRoute(PageNames.LESSON_LEARNER_REPORT, { lessonId });
+        return this.classRoute(PageNames.REPORTS_LEARNER_REPORT_QUIZ_PAGE_ROOT, { quizId });
       },
       exportCSVLessons() {
         const filteredLessons = this.lessons
@@ -266,9 +250,6 @@
           return;
         }
         this.quizLimit += 10;
-      },
-      quizLessonNotStarted(status) {
-        return status === STATUSES.notStarted;
       },
     },
     $trs: {

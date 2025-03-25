@@ -108,8 +108,6 @@ class NetworkLocation(models.Model):
 
     def save(self, *args, **kwargs):
         self._set_fields_for_type()
-        if self.operating_system is None:
-            self.operating_system = ""
         return super(NetworkLocation, self).save(*args, **kwargs)
 
     def _set_fields_for_type(self):

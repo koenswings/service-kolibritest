@@ -70,7 +70,6 @@ class ExamSerializer(ModelSerializer):
             "archive",
             "assignments",
             "learners_see_fixed_order",
-            "instant_report_visibility",
             "learner_ids",
             "draft",
         )
@@ -270,10 +269,6 @@ class ExamSerializer(ModelSerializer):
             instance.title = validated_data.pop("title", instance.title)
             instance.learners_see_fixed_order = validated_data.pop(
                 "learners_see_fixed_order", instance.learners_see_fixed_order
-            )
-            instance.instant_report_visibility = validated_data.pop(
-                "instant_report_visibility",
-                instance.instant_report_visibility,
             )
             if not instance_is_draft:
                 # Update the non-draft specific fields

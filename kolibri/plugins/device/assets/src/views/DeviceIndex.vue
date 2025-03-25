@@ -30,7 +30,6 @@
   import urls from 'kolibri/urls';
   import useUser from 'kolibri/composables/useUser';
   import plugin_data from 'kolibri-plugin-data';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { PageNames } from '../constants';
 
   import PinAuthenticationModal from './PinAuthenticationModal';
@@ -44,11 +43,9 @@
     mixins: [commonCoreStrings],
     setup() {
       const { isUserLoggedIn, userFacilityId } = useUser();
-      const { facilities } = useFacilities();
       return {
         isUserLoggedIn,
         userFacilityId,
-        facilities,
       };
     },
     data() {
@@ -59,6 +56,9 @@
     },
     computed: {
       ...mapState(['authenticateWithPin', 'grantPluginAccess']),
+      facilities() {
+        return this.$store.state.core.facilities;
+      },
       isPinSet() {
         const dataset = this.currentFacility['dataset'] || {};
         const extraFields = dataset['extra_fields'] || {};

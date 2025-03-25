@@ -2,18 +2,14 @@
 
   <div>
     <AccordionContainer
-      :multiple="false"
-      style="border: 0"
+      v-if="Object.keys(availableLibraryCategories).length"
+      class="accordion-select"
     >
       <AccordionItem
-        v-if="Object.keys(availableLibraryCategories).length"
-        isOpenByDefault
-        class="accordion-select"
         :title="$tr('categoryLabel')"
         :headerAppearanceOverrides="
           accordionHeaderStyles(activeCategories.some(cat => isCategoryActive(cat)))
         "
-        :style="accordionItemStyles"
       >
         <template #content>
           <KButton
@@ -40,14 +36,18 @@
                 :color="$themeTokens.primary"
               />
             </template>
-            <KIcon
+            <template
               v-if="category.nested"
-              icon="chevronRight"
-              class="category-icon-after"
-            />
+              #iconAfter
+            >
+              <KIcon
+                icon="chevronRight"
+                class="category-icon-after"
+              />
+            </template>
           </KButton>
           <KButton
-            :text="coreString('otherCategories')"
+            :text="coreString('uncategorized')"
             class="category-button"
             :class="$computedClass({ ':hover': { background: selectedHighlightColor } })"
             :style="{
@@ -55,20 +55,16 @@
             }"
             appearance="flat-button"
             @click="noCategories"
-          >
-            <template #icon>
-              <KIcon
-                class="category-icon"
-                icon="optionsCircle"
-                :color="$themeTokens.primary"
-              />
-            </template>
-          </KButton>
+          />
         </template>
       </AccordionItem>
+    </AccordionContainer>
+
+    <AccordionContainer
+      v-if="languageOptionsList.length"
+      class="accordion-select"
+    >
       <AccordionItem
-        v-if="languageOptionsList.length"
-        class="accordion-select"
         :title="coreString('languageLabel')"
         :headerAppearanceOverrides="
           accordionHeaderStyles(anySelectedFor('languages', languageOptionsList))
@@ -78,7 +74,6 @@
           maxHeight: '256px',
           overflowY: 'scroll',
         }"
-        :style="accordionItemStyles"
       >
         <template #content>
           <KCheckbox
@@ -91,9 +86,13 @@
           />
         </template>
       </AccordionItem>
+    </AccordionContainer>
+
+    <AccordionContainer
+      v-if="contentLevelOptions.length"
+      class="accordion-select"
+    >
       <AccordionItem
-        v-if="contentLevelOptions.length"
-        class="accordion-select"
         :title="coreString('levelLabel')"
         :disabled="contentLevelOptions.every(opt => opt.disabled)"
         :headerAppearanceOverrides="
@@ -103,7 +102,6 @@
           maxHeight: '256px',
           overflowY: 'scroll',
         }"
-        :style="accordionItemStyles"
       >
         <template #content>
           <KCheckbox
@@ -116,9 +114,13 @@
           />
         </template>
       </AccordionItem>
+    </AccordionContainer>
+
+    <AccordionContainer
+      v-if="accessibilityOptionsList.length"
+      class="accordion-select"
+    >
       <AccordionItem
-        v-if="accessibilityOptionsList.length"
-        class="accordion-select"
         :title="coreString('accessibility')"
         :headerAppearanceOverrides="
           accordionHeaderStyles(anySelectedFor('accessibility_labels', accessibilityOptionsList))
@@ -128,7 +130,6 @@
           maxHeight: '256px',
           overflowY: 'scroll',
         }"
-        :style="accordionItemStyles"
       >
         <template #content>
           <KCheckbox
@@ -141,8 +142,10 @@
           />
         </template>
       </AccordionItem>
+    </AccordionContainer>
+
+    <AccordionContainer class="accordion-select">
       <AccordionItem
-        class="accordion-select"
         :title="coreString('showResources')"
         :headerAppearanceOverrides="
           accordionHeaderStyles(anySelectedFor('learner_needs', needsOptionsList))
@@ -152,7 +155,6 @@
           maxHeight: '256px',
           overflowY: 'scroll',
         }"
-        :style="accordionItemStyles"
       >
         <template #content>
           <KCheckbox
@@ -208,7 +210,7 @@
         type: Object,
         required: true,
         validator(value) {
-          const inputKeys = ['accessibility_labels', 'languages', 'grade_levels'];
+          const inputKeys = ['channels', 'accessibility_labels', 'languages', 'grade_levels'];
           return inputKeys.every(k => Object.prototype.hasOwnProperty.call(value, k));
         },
       },
@@ -288,11 +290,6 @@
           };
         });
       },
-      accordionItemStyles() {
-        return {
-          border: `1px solid ${this.$themeTokens.fineLine}`,
-        };
-      },
     },
     methods: {
       noCategories() {
@@ -334,16 +331,9 @@
         // Takes the dot separated category value and checks if it is active
         return this.activeCategories.some(k => k.includes(categoryValue));
       },
-      categoryIcon(category) {
-        if (category === 'WORK') {
-          return 'skillsResource';
-        } else if (category === 'FOUNDATIONS') {
-          return 'basicSkillsResource';
-        }
-        // for those with a clearer 1:1 match with the category and icon
-        else {
-          return camelCase(category) + 'Resource';
-        }
+      categoryIcon() {
+        // TODO Add icons to KDS then use them
+        return 'categories';
       },
     },
     $trs: {
@@ -408,30 +398,30 @@
     margin-bottom: 1em;
   }
 
-  .category-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0.25em 0.5em;
-    font-weight: normal;
-    text-align: left;
-    text-transform: none;
-  }
-
   .category-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 1em;
+    position: absolute;
+    top: 50%;
+    left: 0.5em;
+    transform: translateY(-50%);
   }
 
   .category-icon-after {
     position: absolute;
-    top: 0.75em;
+    top: 50%;
     right: 0.5em;
-    width: 20px;
-    height: 20px;
-    margin-left: 0.5em;
+    transform: translateY(-50%);
+  }
+
+  .category-button {
+    // Ensure the child KIcons' absolute positioning anchors to this button
+    position: relative;
+    width: 100%;
+    // 0.5em around except on the right where the category icon is
+    padding: 0 0.5em 0 2.25em;
+    font-weight: normal;
+    text-align: left;
+    // KButton text formatting overrides
+    text-transform: unset;
   }
 
   .category-button:not(:last-child) {

@@ -9,14 +9,12 @@ import useOnMyOwnSetup, {
   // eslint-disable-next-line import/named
   useOnMyOwnSetupMock,
 } from '../../src/composables/useOnMyOwnSetup';
-import useFacilities, { useFacilitiesMock } from 'kolibri-common/composables/useFacilities'; // eslint-disable-line
 
 jest.mock('kolibri-common/apiResources/FacilityUserResource');
 jest.mock('../../src/composables/useOnMyOwnSetup');
 jest.mock('kolibri-design-system/lib/composables/useKResponsiveWindow');
 jest.mock('kolibri/composables/useUser');
 jest.mock('kolibri/urls');
-jest.mock('kolibri-common/composables/useFacilities');
 
 FacilityUserResource.fetchModel = jest.fn().mockResolvedValue({});
 
@@ -28,11 +26,6 @@ router.getRoute = () => {};
 
 function makeWrapper() {
   const store = makeStore();
-  useFacilities.mockImplementation(() =>
-    useFacilitiesMock({
-      facilityConfig: { learner_can_edit_password: true },
-    }),
-  );
   return mount(ProfilePage, {
     store,
     localVue,

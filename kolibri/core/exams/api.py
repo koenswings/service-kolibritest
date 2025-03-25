@@ -69,7 +69,6 @@ class ExamViewset(ValuesViewset):
         "creator",
         "data_model_version",
         "learners_see_fixed_order",
-        "instant_report_visibility",
         "date_created",
     )
 
@@ -83,12 +82,7 @@ class ExamViewset(ValuesViewset):
 
     draft_values = common_values + ("assignments", "learner_ids")
 
-    field_map = {
-        "assignments": "assignment_collections",
-        "instant_report_visibility": lambda x: True
-        if x["instant_report_visibility"] is None
-        else x["instant_report_visibility"],
-    }
+    field_map = {"assignments": "assignment_collections"}
 
     def get_draft_queryset(self):
         return models.DraftExam.objects.all()

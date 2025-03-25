@@ -2,11 +2,9 @@
 # base
 #####
 
-FROM ubuntu:jammy AS base
+FROM ubuntu:jammy as base
 
-# Updated node version to fix package dependency error
-#ENV NODE_VERSION=18.19.0
-ENV NODE_VERSION=18.20.0
+ENV NODE_VERSION=18.19.0
 
 # install required packages
 RUN apt-get update && \
@@ -19,7 +17,8 @@ RUN apt-get update && \
     psmisc \
     python3 \
     python3-pip \
-    python3-sphinx
+    python3-sphinx \
+    iproute2           # KSW - Added to solve the "missing ip command" error
 
 # add yarn ppa
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -54,35 +53,25 @@ RUN cd /kolibri \
 #######
 
 #FROM learningequality/kolibribase
-# FROM base AS dev
+FROM base as dev
 
-# ENV KOLIBRI_RUN_MODE=devserver
-# ENV KOLIBRI_HTTP_PORT=8000
-# # yarn devserver port is hardcoded to 8000 so this var is only for info purposes
-
-# COPY docker/entrypoint.py /docker/entrypoint.py
-
-# COPY . /kolibri
-# # This copies current source code into container, note code inside the container
-# # will not change if you change your working dir!
-# # For this you'll have to add option --volume $$PDW:/kolibri when running container.
-
-# WORKDIR /kolibri
-
-# ENTRYPOINT ["python", "/docker/entrypoint.py"]
-
-# # Install kolibri from source
-# RUN cd /kolibri \
-#     && pip install -e .
-
-# CMD ["yarn", "run", "devserver"]
-
-ENV KOLIBRI_RUN_MODE=demoserver
-ENV KOLIBRI_PROVISIONDEVICE_FACILITY="Kolibri Demo"
+ENV KOLIBRI_RUN_MODE=devserver
+ENV KOLIBRI_HTTP_PORT=8000
+# yarn devserver port is hardcoded to 8000 so this var is only for info purposes
 
 COPY docker/entrypoint.py /docker/entrypoint.py
 
-WORKDIR /kolibrihome
+COPY . /kolibri
+# This copies current source code into container, note code inside the container
+# will not change if you change your working dir!
+# For this you'll have to add option --volume $$PDW:/kolibri when running container.
+
+WORKDIR /kolibri
 
 ENTRYPOINT ["python", "/docker/entrypoint.py"]
-CMD ["kolibri", "start", "--foreground"]
+
+# Install kolibri from source
+RUN cd /kolibri \
+    && pip install -e .
+
+CMD ["yarn", "run", "devserver"]

@@ -48,7 +48,6 @@
 
   .px-8 {
     padding-right: 8px;
-    padding-bottom: 2px;
     padding-left: 8px;
   }
 

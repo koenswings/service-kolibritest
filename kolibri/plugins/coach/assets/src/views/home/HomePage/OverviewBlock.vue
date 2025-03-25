@@ -62,7 +62,7 @@
   import { mapGetters } from 'vuex';
   import pickBy from 'lodash/pickBy';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
+  import useUser from 'kolibri/composables/useUser';
   import { ClassesPageNames } from '../../../../../../learn/assets/src/constants';
   import commonCoach from '../../common';
   import { LastPages } from '../../../constants/lastPagesConstants';
@@ -71,7 +71,7 @@
     name: 'OverviewBlock',
     mixins: [commonCoach, commonCoreStrings],
     setup() {
-      const { userIsMultiFacilityAdmin } = useFacilities();
+      const { userIsMultiFacilityAdmin } = useUser();
       return { userIsMultiFacilityAdmin };
     },
     computed: {

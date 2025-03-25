@@ -56,8 +56,8 @@ describe('useQuizCreation', () => {
     removeSection,
     initializeQuiz,
     updateQuiz,
-    addQuestionsToSelection,
-    removeQuestionsFromSelection,
+    addQuestionToSelection,
+    removeQuestionFromSelection,
     saveQuiz,
     quiz,
     allSections,
@@ -70,12 +70,13 @@ describe('useQuizCreation', () => {
       // Methods
       updateSection,
       addQuestionsToSectionFromResources,
+      // replaceSelectedQuestions,
       addSection,
       removeSection,
       initializeQuiz,
       updateQuiz,
-      addQuestionsToSelection,
-      removeQuestionsFromSelection,
+      addQuestionToSelection,
+      removeQuestionFromSelection,
       saveQuiz,
 
       // Computed
@@ -85,6 +86,7 @@ describe('useQuizCreation', () => {
       activeSection,
       activeQuestions,
       selectedActiveQuestions,
+      // replacementQuestionPool,
     } = useQuizCreation());
     initializeQuiz();
   });
@@ -213,21 +215,21 @@ describe('useQuizCreation', () => {
       });
       it('Can add a question to the selected questions', () => {
         const { question_id } = get(activeQuestions)[0];
-        addQuestionsToSelection([question_id]);
+        addQuestionToSelection(question_id);
         expect(get(selectedActiveQuestions)).toHaveLength(1);
       });
       it("Can remove a question from the active section's selected questions", () => {
         const { question_id } = get(activeQuestions)[0];
-        addQuestionsToSelection([question_id]);
+        addQuestionToSelection(question_id);
         expect(get(selectedActiveQuestions)).toHaveLength(1);
-        removeQuestionsFromSelection([question_id]);
+        removeQuestionFromSelection(question_id);
         expect(get(selectedActiveQuestions)).toHaveLength(0);
       });
       it('Does not hold duplicates, so adding an existing question does nothing', () => {
         const { question_id } = get(activeQuestions)[0];
-        addQuestionsToSelection([question_id]);
+        addQuestionToSelection(question_id);
         expect(get(selectedActiveQuestions)).toHaveLength(1);
-        addQuestionsToSelection([question_id]);
+        addQuestionToSelection(question_id);
         expect(get(selectedActiveQuestions)).toHaveLength(1);
       });
     });

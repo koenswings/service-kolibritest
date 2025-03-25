@@ -3,12 +3,6 @@
   <!-- TODO useScrollPosition to set scrollPosition...
     here or in router, but somewhere -->
   <div class="main">
-    <div
-      v-if="windowIsSmall"
-      ref="swipeZone"
-      class="swipe-zone"
-    ></div>
-
     <ScrollingHeader :scrollPosition="0">
       <transition mode="out-in">
         <AppBar
@@ -36,7 +30,7 @@
     <div
       id="main"
       class="main-wrapper"
-      :style="[wrapperStyles, paddingTop]"
+      :style="wrapperStyles"
     >
       <slot></slot>
     </div>
@@ -64,8 +58,6 @@
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import { isTouchDevice } from 'kolibri/utils/browserInfo';
   import useUser from 'kolibri/composables/useUser';
-  import { ref, getCurrentInstance } from 'vue';
-  import { useSwipe } from '@vueuse/core';
   import ScrollingHeader from '../ScrollingHeader';
   import AppBar from './internal/AppBar';
   import SideNav from './internal/SideNav';
@@ -79,26 +71,12 @@
     },
     mixins: [commonCoreStrings],
     setup() {
-      const instance = getCurrentInstance();
-      const isRtl = ref(instance?.proxy.isRtl);
-      const swipeZone = ref(null);
-      const navShown = ref(false);
-      useSwipe(swipeZone, {
-        onSwipeEnd: (e, direction) => {
-          if (direction === 'right' && !navShown.value && !isRtl.value) {
-            navShown.value = true;
-          } else if (direction === 'left' && !navShown.value && isRtl.value) {
-            navShown.value = true;
-          }
-        },
-      });
-      const { windowIsSmall } = useKResponsiveWindow();
+      const { windowBreakpoint, windowIsSmall } = useKResponsiveWindow();
       const { isAppContext } = useUser();
       return {
+        windowBreakpoint,
         windowIsSmall,
         isAppContext,
-        swipeZone,
-        navShown,
       };
     },
     props: {
@@ -124,7 +102,8 @@
     },
     data() {
       return {
-        appBarHeight: 124,
+        appBarHeight: 0,
+        navShown: false,
         lastScrollTop: 0,
         hideAppBars: true,
         throttledHandleScroll: null,
@@ -148,16 +127,13 @@
             backgroundColor: this.$themePalette.grey.v_100,
             paddingLeft: this.paddingLeftRight,
             paddingRight: this.paddingLeftRight,
+            paddingTop: this.appBarHeight + this.paddingTop + 'px',
             paddingBottom: '72px',
             marginTop: 0,
           };
       },
       paddingTop() {
-        const extraPadding = this.isAppContext ? 0 : 5;
-        const totalPadding = this.appBarHeight + extraPadding;
-        return {
-          paddingTop: `${totalPadding}px`,
-        };
+        return this.isAppContext ? 0 : 4;
       },
       paddingLeftRight() {
         return this.isAppContext || this.windowIsSmall ? '8px' : '32px';
@@ -170,18 +146,20 @@
         return show;
       },
     },
-    beforeUpdate() {
-      // Update appBarHeight after AppBar is rerendered and updated
-      this.updateAppBarHeight();
+    watch: {
+      windowBreakpoint() {
+        //Update the the app bar height at every breakpoint
+        this.appBarHeight = this.$refs.appBar.$el.scrollHeight || 0;
+      },
     },
     mounted() {
-      this.updateAppBarHeight();
+      this.$nextTick(() => {
+        this.appBarHeight = this.$refs.appBar.$el.scrollHeight || 0;
+      });
       this.addScrollListener();
-      window.addEventListener('resize', this.updateAppBarHeight);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       this.removeScrollListener();
-      window.removeEventListener('resize', this.updateAppBarHeight);
     },
     methods: {
       addScrollListener() {
@@ -212,10 +190,6 @@
           this.throttledHandleScroll = null;
         }
       },
-      updateAppBarHeight() {
-        // Update the app bar height when window is resized
-        this.appBarHeight = this.$refs.appBar.$el.scrollHeight || 124;
-      },
     },
   };
 
@@ -242,17 +216,6 @@
     z-index: 12;
     height: 48px;
     background-color: white;
-  }
-
-  .swipe-zone {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-    width: 30px;
-    background: red;
-    opacity: 0;
   }
 
 </style>

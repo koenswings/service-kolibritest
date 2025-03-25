@@ -1,6 +1,6 @@
 const compiler = require('vue-template-compiler');
 const descriptorToString = require('vue-sfc-descriptor-to-string');
-const { lintSource } = require('kolibri-format');
+const { lintSource } = require('kolibri-tools/lib/lint');
 const logger = require('./logging');
 const importMap = require('./moduleMapping');
 

@@ -77,7 +77,7 @@
         </KPageContainer>
       </KGridItem>
     </KGrid>
-    <router-view @workingResourcesUpdated="workingResourcesBackup = [...workingResources]" />
+    <router-view />
   </CoachAppBarPage>
 
 </template>
@@ -136,11 +136,16 @@
         type: Boolean,
         default: true,
       },
+      isTemp: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       const workingResourcesBackup = [...(this.$store.state.lessonSummary.workingResources || [])];
 
       return {
+        PageNames,
         currentAction: '',
         ReportsLessonTabs,
         workingResourcesBackup,
@@ -157,7 +162,12 @@
         return this.$store.state.core.loading;
       },
       lessonSelectionRootPage() {
-        return this.classRoute(PageNames.LESSON_SELECT_RESOURCES, {
+        if (this.isTemp) {
+          return this.classRoute(PageNames.LESSON_SELECT_RESOURCES, {
+            lessonId: this.lessonId,
+          });
+        }
+        return this.classRoute(PageNames.LESSON_RESOURCE_SELECTION_ROOT, {
           lessonId: this.lessonId,
         });
       },

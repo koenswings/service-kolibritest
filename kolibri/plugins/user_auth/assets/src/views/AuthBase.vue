@@ -179,6 +179,7 @@
 
 <script>
 
+  import { mapGetters } from 'vuex';
   import CoreLogo from 'kolibri/components/CoreLogo';
   import PrivacyInfoModal from 'kolibri/components/PrivacyInfoModal';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
@@ -186,7 +187,6 @@
   import loginComponents from 'kolibri-common/utils/loginComponents';
   import urls from 'kolibri/urls';
   import plugin_data from 'kolibri-plugin-data';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { ComponentMap } from '../constants';
   import LanguageSwitcherFooter from '../views/LanguageSwitcherFooter';
   import commonUserStrings from './commonUserStrings';
@@ -197,8 +197,7 @@
     components: { CoreLogo, LanguageSwitcherFooter, PrivacyInfoModal },
     mixins: [commonCoreStrings, commonUserStrings],
     setup() {
-      const { facilityConfig } = useFacilities();
-      return { themeConfig, facilityConfig };
+      return { themeConfig };
     },
     props: {
       hideCreateAccount: {
@@ -219,6 +218,7 @@
       };
     },
     computed: {
+      ...mapGetters(['facilityConfig']),
       backgroundImageStyle() {
         if (this.themeConfig.signIn.background) {
           const scrimOpacity = this.themeConfig.signIn.scrimOpacity;

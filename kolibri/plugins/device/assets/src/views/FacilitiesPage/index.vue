@@ -296,7 +296,7 @@
             ) {
               this.fetchFacilites();
               if (task.type === TaskTypes.DELETEFACILITY) {
-                this.showFacilityRemovedSnackbar(task.extra_metadata.facility_name);
+                this.showFacilityRemovedSnackbar(task.facility_name);
               }
               this.taskIdsToWatch = this.taskIdsToWatch.filter(x => x !== task.id);
             } else if (this.isSyncTask(task) && task.status === TaskStatuses.FAILED) {

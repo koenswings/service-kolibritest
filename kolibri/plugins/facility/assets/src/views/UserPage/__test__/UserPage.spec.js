@@ -49,7 +49,7 @@ describe('UserPage component', () => {
 
   describe('message in empty states', () => {
     function getUserTableEmptyMessage(wrapper) {
-      return wrapper.findComponent({ name: 'KTable' }).props().emptyMessage;
+      return wrapper.findComponent({ name: 'UserTable' }).props().emptyMessage;
     }
 
     it('when there are no users', () => {

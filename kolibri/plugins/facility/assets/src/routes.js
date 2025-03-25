@@ -7,7 +7,6 @@ import EditDeviceSyncSchedule from 'kolibri-common/components/SyncSchedule/EditD
 import { SyncPageNames } from 'kolibri-common/components/SyncSchedule/constants';
 import useUser from 'kolibri/composables/useUser';
 import { get } from '@vueuse/core';
-import useFacilities from 'kolibri-common/composables/useFacilities';
 import ClassEditPage from './views/ClassEditPage';
 import CoachClassAssignmentPage from './views/CoachClassAssignmentPage';
 import LearnerClassEnrollmentPage from './views/LearnerClassEnrollmentPage';
@@ -32,8 +31,8 @@ import { PageNames } from './constants';
 const logging = logger.getLogger(__filename);
 
 function facilityParamRequiredGuard(toRoute, subtopicName) {
-  const { userIsMultiFacilityAdmin } = useFacilities();
-  if (userIsMultiFacilityAdmin.value && !toRoute.params.facility_id) {
+  const { userIsMultiFacilityAdmin } = useUser();
+  if (get(userIsMultiFacilityAdmin) && !toRoute.params.facility_id) {
     router
       .replace({
         name: 'ALL_FACILITIES_PAGE',
@@ -159,8 +158,8 @@ export default [
     path: '/',
     // Redirect to AllFacilitiesPage if a superuser and device has > 1 facility
     beforeEnter(to, from, next) {
-      const { userIsMultiFacilityAdmin } = useFacilities();
-      if (userIsMultiFacilityAdmin.value) {
+      const { userIsMultiFacilityAdmin } = useUser();
+      if (get(userIsMultiFacilityAdmin)) {
         next(store.getters.facilityPageLinks.AllFacilitiesPage);
       } else {
         next(store.getters.facilityPageLinks.ManageClassPage);

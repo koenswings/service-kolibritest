@@ -332,8 +332,6 @@ class BaseChannelMetadataMixin(object):
         "public",
         "total_resource_count",
         "published_size",
-        "included_categories",
-        "included_grade_levels",
     )
 
     field_map = {

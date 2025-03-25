@@ -4,7 +4,6 @@ import { createTranslator } from 'kolibri/utils/i18n';
 import useSnackbar from 'kolibri/composables/useSnackbar';
 import useUser from 'kolibri/composables/useUser';
 import { get } from '@vueuse/core';
-import useFacilities from 'kolibri-common/composables/useFacilities';
 
 const snackbarTranslator = createTranslator('UserPageSnackbars', {
   dismiss: {
@@ -20,7 +19,6 @@ const snackbarTranslator = createTranslator('UserPageSnackbars', {
 });
 
 export function showSignInPage(store) {
-  const { facilities } = useFacilities();
   if (Lockr.get(SIGNED_OUT_DUE_TO_INACTIVITY)) {
     const { createSnackbar, clearSnackbar } = useSnackbar();
     createSnackbar({
@@ -35,14 +33,14 @@ export function showSignInPage(store) {
     // Use selected id if available, otherwise get the default facility id from session
     const { userFacilityId } = useUser();
     let facilityId;
-    if (facilities.value.length > 1) {
+    if (store.getters.facilities.length > 1) {
       facilityId = store.state.facilityId || get(userFacilityId);
     } else {
       facilityId = get(userFacilityId);
     }
     store.commit('SET_FACILITY_ID', facilityId);
     store.commit('signIn/SET_STATE', {
-      hasMultipleFacilities: facilities.value.length > 1,
+      hasMultipleFacilities: store.getters.facilities.length > 1,
     });
   });
 }

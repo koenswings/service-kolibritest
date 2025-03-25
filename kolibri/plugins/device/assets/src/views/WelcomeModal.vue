@@ -21,15 +21,13 @@
 
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import useUser from 'kolibri/composables/useUser';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
 
   export default {
     name: 'WelcomeModal',
     mixins: [commonCoreStrings],
     setup() {
       const { isLearnerOnlyImport } = useUser();
-      const { facilities } = useFacilities();
-      return { isLearnerOnlyImport, facilities };
+      return { isLearnerOnlyImport };
     },
     props: {
       importedFacility: {
@@ -46,7 +44,8 @@
       paragraphs() {
         if (this.isLearnerOnlyImport) {
           let facility = this.importedFacility;
-          if (this.facilities.length > 0 && facility === null) facility = this.facilities[0];
+          if (this.$store.getters.facilities.length > 0 && facility === null)
+            facility = this.$store.getters.facilities[0];
           const sndParagraph =
             facility === null
               ? this.$tr('learnOnlyDeviceWelcomeMessage2')

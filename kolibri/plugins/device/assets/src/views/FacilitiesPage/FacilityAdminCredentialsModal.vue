@@ -14,7 +14,6 @@
       :facility="facility"
       :device="device"
       :disabled="formDisabled"
-      :handleSubmit="handleSubmit"
     />
   </KModal>
 

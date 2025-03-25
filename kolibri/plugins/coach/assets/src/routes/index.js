@@ -2,7 +2,6 @@ import store from 'kolibri/store';
 import router from 'kolibri/router';
 import useUser from 'kolibri/composables/useUser';
 import { get } from '@vueuse/core';
-import useFacilities from 'kolibri-common/composables/useFacilities';
 import AllFacilitiesPage from '../views/AllFacilitiesPage';
 import CoachClassListPage from '../views/CoachClassListPage';
 import ClassLearnersListPage from '../views/ClassLearnersListPage';
@@ -21,11 +20,9 @@ import groupsRoutes from './groupsRoutes';
 function showHomePage(toRoute) {
   const initClassInfoPromise = store.dispatch('initClassInfo', toRoute.params.classId);
   const { isSuperuser } = useUser();
-  const { getFacilities, facilities } = useFacilities();
-
   const getFacilitiesPromise =
-    get(isSuperuser) && get(facilities).length === 0
-      ? getFacilities().catch(() => {})
+    get(isSuperuser) && store.state.core.facilities.length === 0
+      ? store.dispatch('getFacilities').catch(() => {})
       : Promise.resolve();
 
   return Promise.all([initClassInfoPromise, getFacilitiesPromise]);
@@ -49,26 +46,13 @@ export default [
     path: '/:facility_id?/classes/:subtopicName?',
     component: CoachClassListPage,
     props: true,
-    async handler(toRoute) {
+    handler(toRoute) {
       // loading state is handled locally
       store.dispatch('notLoading');
       // if user only has access to one facility, facility_id will not be accessible from URL,
       // but always defaulting to userFacilityId would cause problems for multi-facility admins
       const { userFacilityId } = useUser();
-      const { facilities, getFacilities, userIsMultiFacilityAdmin } = useFacilities();
       const facilityId = toRoute.params.facility_id || get(userFacilityId);
-
-      if (facilities.value.length === 0) {
-        await getFacilities();
-      }
-
-      if (userIsMultiFacilityAdmin.value && !toRoute.params.facility_id) {
-        return router.replace({
-          name: 'AllFacilitiesPage',
-          params: { subtopicName: toRoute.params.subtopicName },
-        });
-      }
-
       store.dispatch('setClassList', facilityId).then(
         () => {
           if (!store.getters.classListPageEnabled) {
@@ -140,8 +124,8 @@ export default [
     path: '/',
     // Redirect to AllFacilitiesPage if a superuser and device has > 1 facility
     beforeEnter(to, from, next) {
-      const { userIsMultiFacilityAdmin } = useFacilities();
-      if (userIsMultiFacilityAdmin.value) {
+      const { userIsMultiFacilityAdmin } = useUser();
+      if (get(userIsMultiFacilityAdmin)) {
         next({ name: 'AllFacilitiesPage', replace: true });
       } else {
         next({ name: 'CoachClassListPage', replace: true });

@@ -56,11 +56,11 @@
 
 <script>
 
-  import { mapState } from 'vuex';
+  import { mapGetters, mapState } from 'vuex';
+
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import PaginatedListContainer from 'kolibri-common/components/PaginatedListContainer';
   import { PermissionTypes, UserKinds } from 'kolibri/constants';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import DeviceAppBarPage from '../DeviceAppBarPage';
   import { deviceString } from '../commonDeviceStrings';
   import UserGrid from './UserGrid';
@@ -80,10 +80,6 @@
       UserGrid,
     },
     mixins: [commonCoreStrings],
-    setup() {
-      const { facilities } = useFacilities();
-      return { facilities };
-    },
     data() {
       return {
         searchFilterText: '',
@@ -101,6 +97,7 @@
       ...mapState({
         query: state => state.query,
       }),
+      ...mapGetters(['facilities']),
       hasMultipleFacilities() {
         if (this.facilities) {
           return this.facilities.length > 1;

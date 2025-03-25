@@ -74,6 +74,7 @@
   import every from 'lodash/every';
   import pickBy from 'lodash/pickBy';
   import redirectBrowser from 'kolibri/utils/redirectBrowser';
+  import { mapGetters } from 'vuex';
   import { ERROR_CONSTANTS } from 'kolibri/constants';
   import CatchErrors from 'kolibri/utils/CatchErrors';
   import GenderSelect from 'kolibri-common/components/userAccounts/GenderSelect';
@@ -84,7 +85,6 @@
   import useUser from 'kolibri/composables/useUser';
   import FacilityUserResource from 'kolibri-common/apiResources/FacilityUserResource';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { RoutesMap } from '../constants';
 
   export default {
@@ -104,8 +104,7 @@
     mixins: [commonCoreStrings],
     setup() {
       const { isLearnerOnlyImport, isLearner, currentUserId } = useUser();
-      const { facilityConfig } = useFacilities();
-      return { isLearnerOnlyImport, isLearner, currentUserId, facilityConfig };
+      return { isLearnerOnlyImport, isLearner, currentUserId };
     },
     data() {
       return {
@@ -122,6 +121,7 @@
       };
     },
     computed: {
+      ...mapGetters(['facilityConfig']),
       formDisabled() {
         return this.status === 'BUSY';
       },

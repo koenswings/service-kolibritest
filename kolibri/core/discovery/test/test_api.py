@@ -12,7 +12,6 @@ from rest_framework.test import APITestCase
 
 from .. import models
 from ..utils.network import connections
-from .helpers import mock_happy_no_os_request
 from .helpers import mock_request
 from kolibri.core.auth.test.helpers import create_superuser
 from kolibri.core.auth.test.helpers import DUMMY_PASSWORD
@@ -202,33 +201,6 @@ class NetworkLocationAPITestCase(APITestCase):
             self.dynamic_location.id,
         ]
         self.assert_network_location_list(None, expected_ids)
-
-    def test_update_connection_status(self):
-        from django.db.utils import IntegrityError
-
-        studio_non_reserved_location = models.NetworkLocation.objects.create(
-            base_url=CENTRAL_CONTENT_BASE_URL,
-        )
-
-        with mock.patch.object(
-            requests.Session,
-            "request",
-            mock_happy_no_os_request("https://happyurl.qqq/"),
-        ):
-            self.login(self.superuser)
-            try:
-                self.client.post(
-                    reverse(
-                        "kolibri:core:networklocation-update-connection-status",
-                        args=[studio_non_reserved_location.id],
-                    ),
-                )
-            except IntegrityError as e:
-                self.fail(
-                    "NetworkLocation.operating_system has no default value set: {}".format(
-                        e
-                    )
-                )
 
 
 class PinnedDeviceAPITestCase(APITestCase):

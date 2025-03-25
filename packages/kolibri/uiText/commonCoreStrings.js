@@ -188,17 +188,9 @@ export const coreStrings = createTranslator('CommonCoreStrings', {
     context:
       "An action that removes a resource or topic from a user's bookmarks. The opposite of 'Save to bookmarks'.",
   },
-  removedFromBookmarks: {
-    message: 'Removed from bookmarks',
-    context: 'A message indicating that a user has removed a resource from bookmarks',
-  },
   saveToBookmarks: {
     message: 'Save to bookmarks',
     context: "An action that adds a resource or topic to a user's bookmarks",
-  },
-  savedToBookmarks: {
-    message: 'Saved to bookmarks',
-    context: 'A message indicating that a user has saved a resource to bookmarks',
   },
   zoomIn: {
     message: 'Zoom in',
@@ -887,11 +879,6 @@ export const coreStrings = createTranslator('CommonCoreStrings', {
     context: 'A label to indicate that no category label has been applied to the resource.',
   },
 
-  otherCategories: {
-    message: 'Other',
-    context: 'A label to indicate that the resource belongs to a category not listed.',
-  },
-
   // Resources Needed Categories = {
   forBeginners: {
     message: 'For beginners',
@@ -1061,12 +1048,6 @@ export const coreStrings = createTranslator('CommonCoreStrings', {
   selectFromChannels: {
     message: 'Select from channels',
     context: "Option on the 'Manage lesson resources' page.",
-  },
-  noAvailableResources: {
-    message:
-      'There are no resources available. Please contact your administrator to import channels on this device.',
-    context:
-      'Message displayed when there are no resources available for the user to select or view.',
   },
   selectFromBookmarks: {
     message: 'Select from bookmarks',
@@ -1593,7 +1574,6 @@ const nonconformingKeys = {
   FOUNDATIONS: 'basicSkills',
   foundations: 'basicSkills',
   foundationsLogicAndCriticalThinking: 'logicAndCriticalThinking',
-  WORK_SKILLS: 'allLevelsWorkSkills',
 };
 
 /**

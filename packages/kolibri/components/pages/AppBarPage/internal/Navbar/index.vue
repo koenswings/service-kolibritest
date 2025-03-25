@@ -83,10 +83,6 @@
           return values.every(value => value.link.name);
         },
       },
-      title: {
-        type: String,
-        required: true,
-      },
     },
     data() {
       return { mounted: false };
@@ -96,7 +92,7 @@
         return this.navigationLinks.filter(l => !l.isHidden);
       },
       overflowMenuLinks() {
-        if (!this.mounted || isUndefined(this.windowWidth) || !this.title) {
+        if (!this.mounted || isUndefined(this.windowWidth)) {
           return [];
         }
         const containerTop = this.$refs.items.offsetTop;
@@ -118,17 +114,12 @@
         if (this.windowIsLarge) {
           return styles;
         }
+        styles.marginTop = 0;
         if (this.windowIsMedium) {
           return styles;
         }
         styles.maxHeight = '42px';
         return styles;
-      },
-    },
-    watch: {
-      // Whenever overflowMenuLinks changes, emit its new length
-      overflowMenuLinks(newValue) {
-        this.$emit('update-overflow-count', newValue.length);
       },
     },
     mounted() {

@@ -85,10 +85,6 @@ clean-pyc:
 clean-docs:
 	$(MAKE) -C docs clean
 
-clean-test-pypi:
-	pip install pypi-cleanup==0.1.8
-	pypi-cleanup --host https://test.pypi.org --package kolibri --leave-most-recent-only --yes --do-it --username aronleqtest
-
 lint:
 	flake8 kolibri
 
@@ -290,7 +286,7 @@ docker-demoserver: docker-envlist
 			-f docker/demoserver.dockerfile \
 			-t "learningequality/demoserver" .
 	docker run --init \
-			-v $$PWD/docker/mnt:/docker/mnt \
+			-v /Users/koenswings/Code/kolibri/kolibri/docker/mnt:/docker/mnt \
 			-p 8080:8080 \
 			--env-file ./docker/env.list \
 			--env KOLIBRI_PEX_URL="default" \
@@ -306,7 +302,7 @@ docker-devserver: docker-envlist
 			-f docker/dev.dockerfile \
 			-t "learningequality/kolibridev" .
 	docker run --init \
-			-v $$PWD/docker/mnt:/docker/mnt \
+			-v /Users/koenswings/Code/kolibri/kolibri/docker/mnt:/docker/mnt \
 			-p 8000:8000 \
 			-p 3000:3000 \
 			--env-file ./docker/env.list \

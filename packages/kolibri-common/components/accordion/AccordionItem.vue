@@ -26,21 +26,17 @@
             >
               <slot name="leading-actions"></slot>
             </div>
-            <span
-              :style="{
-                color: disabledTitle ? $themeTokens.textDisabled : 'inherit',
-              }"
-            >
+            <span>
               {{ title }}
             </span>
           </div>
           <div class="trailing-actions">
-            <slot name="trailing-actions"></slot>
             <KIconButton
               tabindex="-1"
               :icon="isExpanded ? 'chevronDown' : 'chevronRight'"
               @click.stop="toggle"
             />
+            <slot name="trailing-actions"></slot>
           </div>
         </div>
       </button>
@@ -82,10 +78,6 @@
         type: String,
         required: true,
       },
-      disabledTitle: {
-        type: Boolean,
-        default: false,
-      },
       headerAppearanceOverrides: {
         type: [Object, String],
         default: null,
@@ -98,10 +90,6 @@
         type: Boolean,
         default: false,
       },
-      isOpenByDefault: {
-        type: Boolean,
-        default: false,
-      },
     },
     computed: {
       contentId() {
@@ -110,9 +98,6 @@
     },
     mounted() {
       this.registerItem();
-      if (this.isOpenByDefault) {
-        this.toggle();
-      }
     },
     componentWillUnmount() {
       this.unregisterItem();
@@ -147,7 +132,6 @@
 
       .header-content {
         display: flex;
-        gap: 4px;
         align-items: center;
         justify-content: space-between;
       }

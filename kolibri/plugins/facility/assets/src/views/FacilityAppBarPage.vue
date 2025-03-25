@@ -11,17 +11,18 @@
 
 <script>
 
+  import { mapGetters } from 'vuex';
   import AppBarPage from 'kolibri/components/pages/AppBarPage';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
+  import useUser from 'kolibri/composables/useUser';
 
   export default {
     name: 'FacilityAppBarPage',
     components: { AppBarPage },
     mixins: [commonCoreStrings],
     setup() {
-      const { userIsMultiFacilityAdmin, currentFacilityName } = useFacilities();
-      return { userIsMultiFacilityAdmin, currentFacilityName };
+      const { userIsMultiFacilityAdmin } = useUser();
+      return { userIsMultiFacilityAdmin };
     },
     props: {
       appBarTitle: {
@@ -30,6 +31,7 @@
       },
     },
     computed: {
+      ...mapGetters(['currentFacilityName']),
       /* Returns the given appBarTitle prop if given, otherwise will return
        the facility label appropriate to whether there are multiple facilities
        and the current user is the correct kind of admin */

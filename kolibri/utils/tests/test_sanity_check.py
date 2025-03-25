@@ -15,9 +15,7 @@ from kolibri.utils.tests.helpers import override_option
 class SanityCheckTestCase(TestCase):
     @patch("kolibri.utils.sanity_checks.logging.error")
     @override_option(
-        "Paths",
-        "CONTENT_DIR",
-        "Z:\\NOTREAL" if sys.platform == "win32" else "/proc/self/mem/impossible",
+        "Paths", "CONTENT_DIR", "Z:\\NOTREAL" if sys.platform == "win32" else "/dir_dne"
     )
     def test_content_dir_dne(self, logging_mock):
         with self.assertRaises(SystemExit):

@@ -11,7 +11,7 @@ describe('GenderSelect', () => {
 
   test('renders correctly with label placeholder and options', async () => {
     renderComponent();
-    await fireEvent.click(screen.getByText('Gender'));
+
     expect(screen.getByText('Gender')).toBeInTheDocument();
     labelOptions.forEach(option => {
       expect(screen.getByText(option)).toBeInTheDocument();
@@ -20,7 +20,6 @@ describe('GenderSelect', () => {
 
   test("emits 'update:value' event when an option is selected", async () => {
     const { emitted } = renderComponent();
-    await fireEvent.click(screen.getByText('Gender'));
 
     const selectedOption = labelOptions[0];
     await fireEvent.click(screen.getByText(selectedOption));
@@ -32,7 +31,7 @@ describe('GenderSelect', () => {
 
   test("the value of 'update:value' event is changed when a different option is selected", async () => {
     const { emitted } = renderComponent();
-    await fireEvent.click(screen.getByText('Gender'));
+
     const selectedOption = labelOptions[0];
     await fireEvent.click(screen.getByText(selectedOption));
     const newSelectedOption = labelOptions[1];

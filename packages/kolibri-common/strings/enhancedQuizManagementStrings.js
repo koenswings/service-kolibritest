@@ -69,9 +69,6 @@ export const enhancedQuizManagementStrings = createTranslator('EnhancedQuizManag
   addNumberOfQuestions: {
     message: 'Add { count, number } { count, plural, one { question } other { questions }}',
   },
-  replaceNumberOfQuestions: {
-    message: 'Replace { count, number } { count, plural, one { question } other { questions }}',
-  },
   selectResourcesDescription: {
     message: "Add questions to '{ sectionTitle }'",
   },
@@ -94,9 +91,6 @@ export const enhancedQuizManagementStrings = createTranslator('EnhancedQuizManag
   },
   expandAll: {
     message: 'Expand all',
-  },
-  autoReplaceAction: {
-    message: 'Auto-replace',
   },
   replaceAction: {
     message: 'Replace',
@@ -147,6 +141,17 @@ export const enhancedQuizManagementStrings = createTranslator('EnhancedQuizManag
     context:
       'A warning message that appears when the user tries to leave the page without saving their work',
   },
+  closeConfirmationTitle: {
+    message: 'Are you sure you want to leave this page?',
+    context:
+      'The title of a confirmation modal informing the user that they will lose their work if they leave the page',
+  },
+  closeConfirmationMessage: {
+    message: 'You will lose any unsaved edits to your work',
+    context:
+      'Warning message for the user that they will lose their work if they leave the page without saving.',
+  },
+
   numberOfSelectedReplacements: {
     message:
       '{ count, number } of { total, number } {total, plural, one {replacement selected} other {replacements selected}}',
@@ -154,10 +159,6 @@ export const enhancedQuizManagementStrings = createTranslator('EnhancedQuizManag
   numberOfReplacementsAvailable: {
     message:
       '{count, number, integer} {count, plural, one {replacement question available} other {replacement questions available}}',
-  },
-  numberOfQuestionsAdded: {
-    message:
-      '{ count, number } { count, plural, one { question successfully added } other { questions successfully added }} ',
   },
   numberOfQuestionsReplaced: {
     message:
@@ -214,62 +215,6 @@ export const enhancedQuizManagementStrings = createTranslator('EnhancedQuizManag
   },
   saveAndClose: {
     message: 'Save and close',
-  },
-  questionsSettingsLabel: {
-    message: "Questions settings for '{ sectionTitle }'",
-    context:
-      'A title label for the section of the page that contains settings for questions selection',
-  },
-  maxNumberOfQuestionsInfo: {
-    message:
-      'You can add up to { count, number } { count, plural, one { question } other { questions }}  to this section',
-    context: 'A message that informs the user about the maximum number of questions they can add',
-  },
-  chooseQuestionsManuallyLabel: {
-    message: 'Choose questions manually',
-    context: 'A label for a checkbox that allows the user to manually select questions',
-  },
-  clearSelectionNotice: {
-    message: 'Changing this setting will clear your current selections',
-    context: 'A message that informs the user that changing a setting will remove their selections',
-  },
-  selectUpToNResources: {
-    message:
-      'Select up to { count, number } { count, plural, one { resource } other { resources }}',
-    context:
-      'A message that informs the user about the maximum number of resources they can select',
-  },
-  selectNQuestions: {
-    message: 'Select { count, number } { count, plural, one { question } other { questions }}',
-    context: 'A message that informs the user about the number of questions they need to select',
-  },
-  selectUpToNQuestions: {
-    message:
-      'Select up to { count, number } { count, plural, one { question } other { questions }}',
-    context:
-      'A message that informs the user about the maximum number of questions they can select',
-  },
-  maximumResourcesSelectedWarning: {
-    message: 'Maximum resources selected',
-    context:
-      'A warning message that appears when the user has already selected the maximum number of resources',
-  },
-  maximumQuestionsSelectedWarning: {
-    message: 'Maximum questions selected',
-    context:
-      'A warning message that appears when the user has already selected the maximum number of questions',
-  },
-  manualSelectionOnNotice: {
-    message: 'Manual question selection is on',
-    context: 'A message that appears when the user has enabled the manual selection of questions',
-  },
-  manualSelectionOffNotice: {
-    message: 'Manual question selection is off',
-    context: 'A message that appears when the user has disabled the manual selection of questions',
-  },
-  replacingThisQuestionLabel: {
-    message: 'Replacing this question',
-    context: 'A label for the question that is being replaced',
   },
 });
 

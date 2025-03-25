@@ -134,7 +134,7 @@ class Command(BaseCommand):
         metadata.bind = engine
 
         generator = CodeGenerator(
-            metadata, False, True, True, True, False, nocomments=False
+            metadata, False, False, True, True, False, nocomments=False
         )
 
         with io.open(

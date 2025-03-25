@@ -7,7 +7,7 @@
       <th v-if="anyScore">
         {{ coreString('scoreLabel') }}
       </th>
-      <th v-if="showTries">
+      <th v-if="anyTries">
         {{ coachString('attemptsLabel') }}
       </th>
       <th v-if="anyTimeSpent">
@@ -78,7 +78,7 @@
               :diff="getDiff(tableRow)"
             />
           </td>
-          <td v-if="showTries">
+          <td v-if="anyTries">
             {{ tableRow.statusObj.tries }}
           </td>
           <td v-if="anyTimeSpent">
@@ -100,7 +100,6 @@
 
 <script>
 
-  import Modalities from 'kolibri-constants/Modalities';
   import isUndefined from 'lodash/isUndefined';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import commonCoach from '../../common';
@@ -142,17 +141,9 @@
       anyTimeSpent() {
         return this.entries.some(entry => !isUndefined(entry.statusObj.time_spent));
       },
-      // Presumes this is a Lesson report table as exerciseId is only present in lesson routes
-      showTries() {
-        return (
-          this.anyTries &&
-          this.contentMap[this.$route.params.exerciseId]?.options?.modality === Modalities.QUIZ
-        );
-      },
       anyTries() {
         return this.entries.some(entry => !isUndefined(entry.statusObj.tries));
       },
-      // Presumes this is a Lesson report table as quizId is only present in quiz routes
       exam() {
         return this.examMap[this.$route.params.quizId];
       },

@@ -109,6 +109,7 @@
 
 <script>
 
+  import { mapGetters } from 'vuex';
   import every from 'lodash/every';
   import { DemographicConstants, ERROR_CONSTANTS } from 'kolibri/constants';
   import GenderSelect from 'kolibri-common/components/userAccounts/GenderSelect';
@@ -122,7 +123,6 @@
   import client from 'kolibri/client';
   import CatchErrors from 'kolibri/utils/CatchErrors';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { ComponentMap } from '../constants';
   import { SignUpResource } from '../apiResource';
   import LanguageSwitcherFooter from './LanguageSwitcherFooter';
@@ -148,13 +148,6 @@
       PrivacyLinkAndModal,
     },
     mixins: [commonCoreStrings, commonUserStrings],
-    setup() {
-      const { selectedFacility, facilityConfig } = useFacilities();
-      return {
-        selectedFacility,
-        facilityConfig,
-      };
-    },
     data() {
       return {
         name: '',
@@ -171,6 +164,7 @@
       };
     },
     computed: {
+      ...mapGetters(['selectedFacility', 'facilityConfig']),
       atFirstStep() {
         return !this.$route.query.step || this.$route.query.step === 1;
       },

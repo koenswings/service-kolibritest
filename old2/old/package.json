@@ -1,0 +1,71 @@
+{
+  "name": "kolibri-root",
+  "version": "0.12.0-dev.1",
+  "description": "Development utilities for Kolibri",
+  "workspaces": [
+    "packages/*",
+    "kolibri/core",
+    "kolibri/plugins/*"
+  ],
+  "scripts": {
+    "test": "yarn run test-jest --watch",
+    "test-jest": "kolibri-tools test --config ./jest.conf.js",
+    "test-jest-cov": "yarn run test-jest --coverage",
+    "coverage": "yarn run test-jest-cov",
+    "build": "yarn run hashi-build && kolibri-tools build prod --file ./build_tools/build_plugins.txt --transpile",
+    "makemessages": "kolibri-tools i18n-extract-messages --pluginFile ./build_tools/build_plugins.txt --namespace kolibri-common --searchPath ./packages/kolibri-common",
+    "createprofiles": "kolibri-tools i18n-profile --pluginFile ./build_tools/build_plugins.txt --output-file ./kolibri/locale/en/LC_MESSAGES/profiles/strings.csv --namespace kolibri-common --searchPath ./packages/kolibri-common",
+    "auditdittostrings": "kolibri-tools i18n-audit --pluginFile ./build_tools/build_plugins.txt --output-file ./kolibri/locale/en/LC_MESSAGES/profiles/ditto.csv --namespace kolibri-common --searchPath ./packages/kolibri-common",
+    "transfercontext": "kolibri-tools i18n-transfer-context --pluginFile ./build_tools/build_plugins.txt --namespace kolibri-common --searchPath ./packages/kolibri-common",
+    "watch": "kolibri-tools build dev --file ./build_tools/build_plugins.txt --cache",
+    "watch-hot": "yarn run watch --hot",
+    "app-python-devserver": "DJANGO_SETTINGS_MODULE=kolibri.deployment.default.settings.dev python ./integration_testing/scripts/run_kolibri_app_mode.py",
+    "python-devserver": "kolibri start --debug --foreground --port=8000 --settings=kolibri.deployment.default.settings.dev",
+    "python-devserver-no-update": "kolibri start --debug --skip-update --foreground --port=8000 --settings=kolibri.deployment.default.settings.dev",
+    "frontend-devserver": "concurrently --passthrough-arguments --kill-others \"yarn:watch --watchonly {1}\" yarn:hashi-dev --",
+    "app-devserver": "concurrently --passthrough-arguments --kill-others \"yarn:watch --watchonly {1}\" yarn:app-python-devserver yarn:hashi-dev --",
+    "devserver": "concurrently --passthrough-arguments --kill-others \"yarn:watch --watchonly {1}\" yarn:python-devserver yarn:hashi-dev --",
+    "devserver-hot": "concurrently --passthrough-arguments --kill-others \"yarn:watch-hot --watchonly {1}\" yarn:python-devserver yarn:hashi-dev --",
+    "devserver-with-kds": "concurrently --passthrough-arguments --kill-others \"yarn:watch --watchonly={2} --require-kds-path --kds-path={1}\" yarn:python-devserver yarn:hashi-dev --",
+    "bundle-stats": "kolibri-tools build stats --file ./build_tools/build_plugins.txt --transpile",
+    "clean": "rm -fr kolibri/core/content/static/hashi/ && kolibri-tools build clean --file ./build_tools/build_plugins.txt",
+    "lint-frontend": "kolibri-format --pattern '{kolibri*/**/assets,packages,build_tools}/**/*.{js,vue,scss,less,css}' --ignore '**/dist/**' '**/node_modules/**' '**/static/**'",
+    "lint-frontend:format": "yarn run lint-frontend --write",
+    "lint-frontend:watch": "yarn run lint-frontend --monitor",
+    "lint-frontend:watch:format": "yarn run lint-frontend --monitor --write",
+    "migrate-core-api": "kolibri-tools migrate  '{kolibri*/**/assets,packages}/**/*.{js,vue}' --ignore '**/dist/**,**/node_modules/**,**/static/**'",
+    "hashi-dev": "yarn workspace hashi run dev",
+    "hashi-build": "yarn workspace hashi run build",
+    "compress": "kolibri-tools compress 'kolibri/*/**/static/**/*.{html,js,css,svg,map,eot,ttf}'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/learningequality/kolibri.git"
+  },
+  "author": "Learning Equality",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/learningequality/kolibri/issues"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "xhr-mock": "^2.5.1",
+    "concurrently": "^8.0.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">= 18.20.0",
+    "yarn": ">= 1.12.3"
+  },
+  "browserslist": [
+    "extends browserslist-config-kolibri"
+  ],
+  "volta": {
+    "node": "18.20.7",
+    "yarn": "1.22.22"
+  }
+}

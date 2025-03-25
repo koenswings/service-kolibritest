@@ -450,12 +450,8 @@ CSP_DEFAULT_SRC = ("'self'", "data:", "blob:") + tuple(
     conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"]
 )
 
-# Use a stricter script source policy to prevent data: from being used
-# we still allow blob: as a source for scripts, as this is used for
-# processing graphie scripts in Perseus.
-CSP_SCRIPT_SRC = ("'self'", "blob:") + tuple(
-    conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"]
-)
+# Use a stricter script source policy to prevent blob: and data: from being used
+CSP_SCRIPT_SRC = ("'self'",) + tuple(conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"])
 
 # Allow inline styles, as we rely on them heavily in our templates
 # and the Aphrodite CSS in JS library generates inline styles

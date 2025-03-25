@@ -1,4 +1,3 @@
-import { computed } from 'vue';
 import { mount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import useUser, { useUserMock } from 'kolibri/composables/useUser'; // eslint-disable-line
@@ -16,9 +15,11 @@ function makeWrapper({ targetFacility } = {}) {
       changeFacilityService: {
         send: sendMachineEvent,
       },
-      state: computed(() => ({
-        targetFacility,
-      })),
+      state: {
+        value: {
+          targetFacility,
+        },
+      },
     },
     localVue,
   });

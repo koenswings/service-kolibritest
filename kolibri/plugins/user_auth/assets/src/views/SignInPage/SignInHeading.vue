@@ -32,18 +32,12 @@
 
 <script>
 
-  import useFacilities from 'kolibri-common/composables/useFacilities';
+  import { mapGetters } from 'vuex';
   import commonUserStrings from '../commonUserStrings';
 
   export default {
     name: 'SignInHeading',
     mixins: [commonUserStrings],
-    setup() {
-      const { selectedFacility } = useFacilities();
-      return {
-        selectedFacility,
-      };
-    },
     props: {
       showFacilityName: {
         type: Boolean,
@@ -57,6 +51,9 @@
         type: String,
         required: true,
       },
+    },
+    computed: {
+      ...mapGetters(['selectedFacility']),
     },
   };
 

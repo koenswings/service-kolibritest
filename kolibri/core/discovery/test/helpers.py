@@ -38,24 +38,6 @@ def mock_request(session, method, url, *args, **kwargs):
         raise exceptions.ConnectionError("Refusing connection to: {}".format(url))
 
 
-def mock_happy_no_os_request(happy_url, default_error=exceptions.RequestException):
-    def mock_request(session, method, url, *args, **kwargs):
-        response = mock.MagicMock()
-        response.__enter__.return_value = response
-        response.status_code = 200
-        response.raw._connection.sock.getpeername.return_value = (
-            "192.168.101.101",
-            123456,
-        )
-        info_copy = dict(info)
-        info_copy["operating_system"] = None
-        response.json.return_value = info_copy
-        response.url = url
-        return response
-
-    return mock_request
-
-
 def mock_happy_request(happy_url, default_error=exceptions.RequestException):
     def mock_request(session, method, url, *args, **kwargs):
         response = mock_response(200)

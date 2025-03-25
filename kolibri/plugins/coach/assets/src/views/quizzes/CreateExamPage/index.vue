@@ -105,7 +105,7 @@
       {{ closeConfirmationMessage$() }}
     </KModal>
 
-    <router-view />
+    <SectionSidePanel v-if="quizInitialized" />
   </CoachImmersivePage>
 
 </template>
@@ -116,7 +116,7 @@
   import get from 'lodash/get';
   import { ERROR_CONSTANTS } from 'kolibri/constants';
   import CatchErrors from 'kolibri/utils/CatchErrors';
-  import { ref, getCurrentInstance } from 'vue';
+  import { ref } from 'vue';
   import pickBy from 'lodash/pickBy';
   import BottomAppBar from 'kolibri/components/BottomAppBar';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
@@ -124,11 +124,11 @@
   import useSnackbar from 'kolibri/composables/useSnackbar';
   import { PageNames } from '../../../constants';
   import CoachImmersivePage from '../../CoachImmersivePage';
-  import { coachStrings } from '../../common/commonCoachStrings';
   import useQuizCreation from '../../../composables/useQuizCreation';
   import AssignmentDetailsModal from '../../common/assignments/AssignmentDetailsModal';
   import useCoreCoach from '../../../composables/useCoreCoach';
   import CreateQuizSection from './CreateQuizSection';
+  import SectionSidePanel from './SectionSidePanel';
 
   export default {
     name: 'CreateExamPage',
@@ -137,13 +137,13 @@
       BottomAppBar,
       CreateQuizSection,
       AssignmentDetailsModal,
+      SectionSidePanel,
     },
     mixins: [commonCoreStrings],
     setup() {
-      const store = getCurrentInstance().proxy.$store;
       const closeConfirmationToRoute = ref(null);
       const { createSnackbar } = useSnackbar();
-      const { classId, initClassInfo, groups } = useCoreCoach();
+      const { classId, groups } = useCoreCoach();
       const {
         quizHasChanged,
         quiz,
@@ -156,11 +156,11 @@
       const showError = ref(false);
       const quizInitialized = ref(false);
 
-      initClassInfo().then(() => store.dispatch('notLoading'));
-
       const {
         saveAndClose$,
         allSectionsEmptyWarning$,
+        closeConfirmationTitle$,
+        closeConfirmationMessage$,
         changesSavedSuccessfully$,
         sectionOrderLabel$,
         randomizedLabel$,
@@ -168,8 +168,6 @@
         randomizedSectionOptionDescription$,
         fixedSectionOptionDescription$,
       } = enhancedQuizManagementStrings;
-
-      const { closeConfirmationTitle$, closeConfirmationMessage$ } = coachStrings;
 
       return {
         closeConfirmationTitle$,
@@ -243,6 +241,21 @@
           query: { ...this.$route.query, ...pickBy(newVal) },
         });
       },
+    },
+    beforeRouteEnter(to, from, next) {
+      // If we're coming from no quizId and going to replace questions, redirect to exam creation
+      // then we're coming from another page altogether OR we're coming back from a refresh
+      if (!from.params?.quizId && to.name === PageNames.QUIZ_REPLACE_QUESTIONS) {
+        next({
+          name: PageNames.EXAM_CREATION_ROOT,
+          params: {
+            classId: to.params.classId,
+            quizId: to.params.quizId,
+          },
+        });
+      } else {
+        next();
+      }
     },
     beforeRouteUpdate(to, from, next) {
       if (

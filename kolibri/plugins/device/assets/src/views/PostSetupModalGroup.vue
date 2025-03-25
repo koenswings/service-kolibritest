@@ -44,7 +44,6 @@
   import AddDeviceForm from 'kolibri-common/components/syncComponentSet/SelectDeviceModalGroup/AddDeviceForm';
   import useUser from 'kolibri/composables/useUser';
   import useSnackbar from 'kolibri/composables/useSnackbar';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { availableChannelsPageLink } from './ManageContentPage/manageContentLinks';
   import WelcomeModal from './WelcomeModal';
   import PermissionsChangeModal from './PermissionsChangeModal';
@@ -70,12 +69,10 @@
     setup() {
       const { isUserLoggedIn } = useUser();
       const { createSnackbar } = useSnackbar();
-      const { facilities } = useFacilities();
 
       return {
         isUserLoggedIn,
         createSnackbar,
-        facilities,
       };
     },
     props: {
@@ -94,7 +91,7 @@
     },
     computed: {
       importedFacility() {
-        const [facility] = this.facilities;
+        const [facility] = this.$store.state.core.facilities;
         if (facility && window.sessionStorage.getItem(facilityImported) === 'true') {
           return facility;
         }

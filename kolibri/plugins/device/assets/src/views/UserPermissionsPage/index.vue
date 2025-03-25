@@ -123,7 +123,6 @@
   import UserTypeDisplay from 'kolibri-common/components/UserTypeDisplay';
   import ImmersivePage from 'kolibri/components/pages/ImmersivePage';
   import useUser from 'kolibri/composables/useUser';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { PageNames } from '../../constants';
 
   export default {
@@ -141,8 +140,7 @@
     mixins: [commonCoreStrings],
     setup() {
       const { currentUserId } = useUser();
-      const { facilities } = useFacilities();
-      return { currentUserId, facilities };
+      return { currentUserId };
     },
     data() {
       return {
@@ -153,7 +151,7 @@
       };
     },
     computed: {
-      ...mapGetters(['isPageLoading']),
+      ...mapGetters(['isPageLoading', 'facilities']),
       ...mapState('userPermissions', ['user', 'permissions']),
       backRoute() {
         return { name: PageNames.MANAGE_PERMISSIONS_PAGE };

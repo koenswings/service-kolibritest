@@ -158,10 +158,6 @@ class AbstractExam(models.Model):
     """
     data_model_version = models.SmallIntegerField(default=3)
 
-    # If True, learners have instant access to exam reports after submission.
-    # Otherwise, reports are visible only after the coach ends the exam.
-    instant_report_visibility = models.BooleanField(null=True, default=True)
-
     def __str__(self):
         return self.title
 
@@ -213,7 +209,6 @@ class DraftExam(AbstractExam):
             collection=self.collection,
             creator=self.creator,
             data_model_version=self.data_model_version,
-            instant_report_visibility=self.instant_report_visibility,
             date_created=self.date_created,
         )
         return exam

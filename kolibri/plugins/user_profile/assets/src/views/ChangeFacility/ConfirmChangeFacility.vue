@@ -55,10 +55,10 @@
     },
     computed: {
       targetFacility() {
-        return this.state.targetFacility;
+        return this.state.value.targetFacility;
       },
       role() {
-        return this.state.role;
+        return this.state.value.role;
       },
       isCreateAccountDisabled() {
         return !get(this.targetFacility, 'learner_can_sign_up');
@@ -85,7 +85,7 @@
       FacilityUserResource.fetchCollection({
         force: true,
         getParams: {
-          member_of: this.state.sourceFacility,
+          member_of: this.state.value.sourceFacility,
         },
       }).then(users => {
         if (Object.keys(users).length === 1) {

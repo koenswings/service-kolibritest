@@ -158,7 +158,7 @@
 
 <script>
 
-  import { mapState, mapActions } from 'vuex';
+  import { mapState, mapGetters, mapActions } from 'vuex';
   import FacilityUsernameResource from 'kolibri-common/apiResources/FacilityUsernameResource';
   import get from 'lodash/get';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
@@ -167,7 +167,6 @@
   import UiAutocompleteSuggestion from 'kolibri-design-system/lib/keen/UiAutocompleteSuggestion';
   import UiAlert from 'kolibri-design-system/lib/keen/UiAlert';
   import useUser from 'kolibri/composables/useUser';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import { ComponentMap } from '../../constants';
   import getUrlParameter from '../getUrlParameter';
   import AuthBase from '../AuthBase';
@@ -194,8 +193,7 @@
     mixins: [commonCoreStrings, commonUserStrings],
     setup() {
       const { isAppContext } = useUser();
-      const { selectedFacility } = useFacilities();
-      return { isAppContext, selectedFacility };
+      return { isAppContext };
     },
     data() {
       return {
@@ -215,6 +213,7 @@
       };
     },
     computed: {
+      ...mapGetters(['selectedFacility']),
       ...mapState('signIn', ['hasMultipleFacilities']),
       backToFacilitySelectionRoute() {
         const facilityRoute = this.$router.getRoute(ComponentMap.FACILITY_SELECT);

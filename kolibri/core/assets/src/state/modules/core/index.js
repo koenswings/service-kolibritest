@@ -13,6 +13,8 @@ export default {
       notifications: [],
       allowRemoteAccess: plugin_data.allowRemoteAccess,
       // facility
+      facilityConfig: {},
+      facilities: [],
       pageVisible: true,
     };
   },

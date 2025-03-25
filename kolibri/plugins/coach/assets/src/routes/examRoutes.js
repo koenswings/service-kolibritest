@@ -1,29 +1,20 @@
 import store from 'kolibri/store';
 import { PageNames } from '../constants';
 import CreateExamPage from '../views/quizzes/CreateExamPage';
-import SectionEditor from '../views/quizzes/CreateExamPage/sidePanels/SectionSidePanel/SectionEditor.vue';
+import SectionEditor from '../views/quizzes/CreateExamPage/SectionEditor.vue';
+import ResourceSelection from '../views/quizzes/CreateExamPage/ResourceSelection.vue';
+import ReplaceQuestions from '../views/quizzes/CreateExamPage/ReplaceQuestions.vue';
 import ExamsRootPage from '../views/quizzes/ExamsRootPage';
 import QuizSummaryPage from '../views/quizzes/QuizSummaryPage';
-import SectionOrder from '../views/quizzes/CreateExamPage/sidePanels/SectionSidePanel/SectionOrder.vue';
-import SectionSidePanel from '../views/quizzes/CreateExamPage/sidePanels/SectionSidePanel/index.vue';
-import QuizResourceSelection from '../views/quizzes/CreateExamPage/sidePanels/QuizResourceSelection/index.vue';
+import SectionOrder from '../views/quizzes/CreateExamPage/SectionOrder';
 import LearnerQuizPage from '../views/common/reports/LearnerQuizPage.vue';
 import QuizPreviewPage from '../views/quizzes/reports/QuizPreviewPage.vue';
 import { generateExamReportDetailHandler } from '../modules/examReportDetail/handlers';
 import QuestionLearnersPage from '../views/common/reports/QuestionLearnersPage.vue';
-import SelectionIndex from '../views/common/resourceSelection/subPages/SelectionIndex.vue';
-import SelectFromTopicTree from '../views/common/resourceSelection/subPages/SelectFromTopicTree.vue';
-import SelectFromBookmarks from '../views/common/resourceSelection/subPages/SelectFromBookmarks.vue';
-import ManageSelectedResources from '../views/common/resourceSelection/subPages/ManageSelectedResources.vue';
-import ManageSelectedQuestions from '../views/quizzes/CreateExamPage/sidePanels/QuizResourceSelection/subPages/ManageSelectedQuestions.vue';
-import SelectFromQuizSearchResults from '../views/quizzes/CreateExamPage/sidePanels/QuizResourceSelection/subPages/SelectFromQuizSearchResults.vue';
-import SearchQuizFilters from '../views/quizzes/CreateExamPage/sidePanels/QuizResourceSelection/subPages/SearchQuizFilters.vue';
-import PreviewSelectedResources from '../views/common/resourceSelection/subPages/PreviewSelectedResources/index.vue';
 import {
   generateQuestionDetailHandler,
   questionRootRedirectHandler,
 } from '../modules/questionDetail/handlers';
-import QuestionsSettings from '../views/quizzes/CreateExamPage/sidePanels/QuizResourceSelection/subPages/QuestionsSettings.vue';
 import { classIdParamRequiredGuard, RouteSegments } from './utils';
 
 const {
@@ -61,101 +52,31 @@ export default [
     },
     children: [
       {
-        name: PageNames.QUIZ_SECTION_SIDE_PANEL,
-        path: 'details',
-        component: SectionSidePanel,
-        children: [
-          {
-            name: PageNames.QUIZ_SECTION_EDITOR,
-            path: 'edit',
-            component: SectionEditor,
-          },
-          {
-            name: PageNames.QUIZ_SECTION_ORDER,
-            path: 'section-order',
-            component: SectionOrder,
-          },
-        ],
+        name: PageNames.QUIZ_SECTION_EDITOR,
+        path: 'edit',
+        component: SectionEditor,
+      },
+      {
+        name: PageNames.QUIZ_REPLACE_QUESTIONS,
+        path: 'replace-questions',
+        component: ReplaceQuestions,
       },
       {
         name: PageNames.QUIZ_SELECT_RESOURCES,
-        path: 'select-resources',
-        component: QuizResourceSelection,
-        redirect: 'select-resources/landing-settings',
-        children: [
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_LANDING_SETTINGS,
-            path: 'landing-settings',
-            component: QuestionsSettings,
-            props: {
-              isLanding: true,
-            },
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_INDEX,
-            path: 'index',
-            component: SelectionIndex,
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_BOOKMARKS,
-            path: 'bookmarks',
-            component: SelectFromBookmarks,
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_TOPIC_TREE,
-            path: 'channels',
-            component: SelectFromTopicTree,
-          },
-          {
-            name: PageNames.QUIZ_PREVIEW_SELECTED_RESOURCES,
-            path: 'preview-resources',
-            component: ManageSelectedResources,
-          },
-          {
-            name: PageNames.QUIZ_PREVIEW_SELECTED_QUESTIONS,
-            path: 'preview-questions',
-            component: ManageSelectedQuestions,
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_SETTINGS,
-            path: 'settings',
-            component: QuestionsSettings,
-          },
-          {
-            name: PageNames.QUIZ_PREVIEW_RESOURCE,
-            path: 'preview',
-            component: PreviewSelectedResources,
-            props: toRoute => {
-              const contentId = toRoute.query.contentId;
-              return {
-                contentId,
-              };
-            },
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_SEARCH,
-            path: 'search',
-            component: SearchQuizFilters,
-          },
-          {
-            name: PageNames.QUIZ_SELECT_RESOURCES_SEARCH_RESULTS,
-            path: 'search-results',
-            component: SelectFromQuizSearchResults,
-          },
-        ],
+        path: 'select-resources/:topic_id?',
+        component: ResourceSelection,
+      },
+      {
+        name: PageNames.QUIZ_SECTION_ORDER,
+        path: 'section-order',
+        component: SectionOrder,
       },
       {
         name: PageNames.QUIZ_SELECT_PRACTICE_QUIZ,
-        path: 'select-quiz',
-        redirect: to => {
-          const { params } = to;
-          return {
-            name: PageNames.QUIZ_SELECT_RESOURCES_INDEX,
-            params,
-            query: {
-              selectPracticeQuiz: true,
-            },
-          };
+        path: 'select-quiz/:topic_id?',
+        component: ResourceSelection,
+        props: {
+          selectPracticeQuiz: true,
         },
       },
     ],

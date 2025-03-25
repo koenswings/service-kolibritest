@@ -5,7 +5,6 @@ import time
 from itertools import islice
 
 from django.apps import apps
-from django.core.management.base import CommandError
 from django.db.models.fields.related import ForeignKey
 from sqlalchemy import and_
 from sqlalchemy import or_
@@ -40,7 +39,6 @@ from kolibri.core.content.models import Language
 from kolibri.core.content.models import LocalFile
 from kolibri.core.content.utils.annotation import set_channel_ancestors
 from kolibri.core.content.utils.search import annotate_label_bitmasks
-from kolibri.core.errors import KolibriUpgradeError
 from kolibri.utils.time_utils import local_now
 
 logger = logging.getLogger(__name__)
@@ -1250,18 +1248,3 @@ def import_channel_from_data(source_data, cancel_check=None, partial=False):
     )
 
     return import_manager.run_and_annotate()
-
-
-def import_channel_by_id(channel_id, cancel_check, contentfolder=None):
-    try:
-        return import_channel_from_local_db(
-            channel_id, cancel_check=cancel_check, contentfolder=contentfolder
-        )
-    except InvalidSchemaVersionError:
-        raise CommandError(
-            "Database file had an invalid database schema, the file may be corrupted or have been modified."
-        )
-    except FutureSchemaError:
-        raise KolibriUpgradeError(
-            "Database file uses a future database schema that this version of Kolibri does not support."
-        )

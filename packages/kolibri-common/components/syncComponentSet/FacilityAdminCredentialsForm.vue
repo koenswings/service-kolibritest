@@ -1,6 +1,6 @@
 <template>
 
-  <form @keydown.enter="submitForm">
+  <form>
     <p
       v-if="singleFacility && facility.name"
       class="facility-name"
@@ -48,7 +48,6 @@
   import commonSyncElements from 'kolibri-common/mixins/commonSyncElements';
   import UsernameTextbox from 'kolibri-common/components/userAccounts/UsernameTextbox';
   import PasswordTextbox from 'kolibri-common/components/userAccounts/PasswordTextbox';
-  import { validateObject } from 'kolibri/utils/objectSpecs';
 
   export default {
     name: 'FacilityAdminCredentialsForm',
@@ -62,20 +61,7 @@
         type: Object,
         required: true,
         validator(val) {
-          return validateObject(val, {
-            name: {
-              type: String,
-              required: true,
-            },
-            id: {
-              type: String,
-              required: true,
-            },
-            baseurl: {
-              type: String,
-              required: true,
-            },
-          });
+          return val.name && val.id && val.baseurl;
         },
       },
       facility: {
@@ -85,10 +71,6 @@
       singleFacility: {
         type: Boolean,
         default: false,
-      },
-      handleSubmit: {
-        type: Function,
-        default: () => {},
       },
     },
     data() {
@@ -155,11 +137,6 @@
             this.$refs.password.focus();
           }
         });
-      },
-      submitForm() {
-        if (this.handleSubmit) {
-          this.handleSubmit();
-        }
       },
     },
     $trs: {

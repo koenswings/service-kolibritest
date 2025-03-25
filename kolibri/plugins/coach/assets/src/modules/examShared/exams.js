@@ -15,7 +15,6 @@ export function examState(exam) {
     questionSources: exam.question_sources,
     assignments: exam.assignments,
     learnersSeeFixedOrder: exam.learners_see_fixed_order,
-    instantReportVisibility: exam.instant_report_visibility,
     dataModelVersion: exam.data_model_version,
     seed: exam.seed,
   };

@@ -24,7 +24,7 @@ export function exerciseToQuestionArray(exercise) {
   });
 }
 
-function getExerciseQuestionsMap(exercises, excludedQuestionIds = []) {
+export function getExerciseQuestionsMap(exercises, excludedQuestionIds = []) {
   const excludedQuestionIdMap = {};
   for (const uId of excludedQuestionIds) {
     excludedQuestionIdMap[uId] = true;

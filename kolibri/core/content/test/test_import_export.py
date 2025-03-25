@@ -454,16 +454,9 @@ class GetContentNodesDataTestCase(TestCase):
         self.assertEqual(total_bytes_to_transfer, 0)
 
 
-def create_dummy_job(is_cancelled=True, check_for_cancel_return=True):
-    dummy = MagicMock()
-    dummy.is_cancelled.return_value = is_cancelled
-    dummy.check_for_cancel.return_value = check_for_cancel_return
-    dummy.start_progress.return_value = None
-    dummy.update_progress.return_value = None
-    return dummy
-
-
-@patch("kolibri.core.content.utils.channel_import.import_channel_from_local_db")
+@patch(
+    "kolibri.core.content.management.commands.importchannel.channel_import.import_channel_from_local_db"
+)
 @patch(
     "kolibri.core.content.management.commands.importchannel.AsyncCommand.start_progress"
 )
@@ -476,25 +469,32 @@ class ImportChannelTestCase(TestCase):
     the_channel_id = "6199dde695db4ee4ab392222d5af1e5c"
 
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_url"
+        "kolibri.core.content.management.commands.importchannel.paths.get_content_database_file_url"
     )
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_path"
+        "kolibri.core.content.management.commands.importchannel.paths.get_content_database_file_path"
     )
-    @patch("kolibri.core.content.utils.channel_transfer.transfer.FileDownload")
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.transfer.FileDownload"
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.check_for_cancel",
+        return_value=True,
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.is_cancelled",
+        return_value=True,
+    )
     def test_remote_cancel_during_transfer(
         self,
-        get_current_job_mock,
+        is_cancelled_mock,
+        cancel_mock,
         FileDownloadMock,
         local_path_mock,
         remote_path_mock,
         start_progress_mock,
         import_channel_mock,
     ):
-
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         fd, local_path = tempfile.mkstemp()
         os.close(fd)
         local_path_mock.return_value = local_path
@@ -502,31 +502,37 @@ class ImportChannelTestCase(TestCase):
         FileDownloadMock.return_value.run.side_effect = TransferCanceled()
         call_command("importchannel", "network", self.the_channel_id)
         # Check that is_cancelled was called
-        dummy_job.is_cancelled.assert_called_with()
+        is_cancelled_mock.assert_called_with()
         # Check that the FileDownload initiated
         FileDownloadMock.assert_called_with(
-            "notest", local_path, cancel_check=dummy_job.is_cancelled
+            "notest", local_path, cancel_check=is_cancelled_mock
         )
         # Check that cancel was called
-        dummy_job.check_for_cancel.assert_called_with()
+        cancel_mock.assert_called_with()
         # Test that import channel cleans up database file if cancelled
         self.assertFalse(os.path.exists(local_path))
 
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_path"
+        "kolibri.core.content.management.commands.importchannel.paths.get_content_database_file_path"
     )
-    @patch("kolibri.core.content.utils.channel_transfer.transfer.FileCopy")
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch("kolibri.core.content.management.commands.importchannel.transfer.FileCopy")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.check_for_cancel",
+        return_value=True,
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.is_cancelled",
+        return_value=True,
+    )
     def test_local_cancel_during_transfer(
         self,
-        get_current_job_mock,
+        is_cancelled_mock,
+        cancel_mock,
         FileCopyMock,
         local_path_mock,
         start_progress_mock,
         import_channel_mock,
     ):
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         fd1, local_dest_path = tempfile.mkstemp()
         fd2, local_src_path = tempfile.mkstemp()
         os.close(fd1)
@@ -535,19 +541,26 @@ class ImportChannelTestCase(TestCase):
         FileCopyMock.return_value.run.side_effect = TransferCanceled()
         call_command("importchannel", "disk", self.the_channel_id, tempfile.mkdtemp())
         # Check that is_cancelled was called
-        dummy_job.is_cancelled.assert_called()
+        is_cancelled_mock.assert_called_with()
+        # Check that the FileCopy initiated
         FileCopyMock.assert_called_with(
-            local_src_path, local_dest_path, cancel_check=dummy_job.is_cancelled
+            local_src_path, local_dest_path, cancel_check=is_cancelled_mock
         )
-        dummy_job.check_for_cancel.assert_called()
+        # Check that cancel was called
+        cancel_mock.assert_called_with()
+        # Test that import channel cleans up database file if cancelled
         self.assertFalse(os.path.exists(local_dest_path))
 
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.check_for_cancel"
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.is_cancelled",
+        return_value=True,
+    )
     def test_remote_import_sslerror(
-        self, get_current_job_mock, start_progress_mock, import_channel_mock
+        self, is_cancelled_mock, cancel_mock, start_progress_mock, import_channel_mock
     ):
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         SSLERROR = SSLError(
             ["SSL routines", "ssl3_get_record", "decryption failed or bad record mac"]
         )
@@ -567,48 +580,56 @@ class ImportChannelTestCase(TestCase):
             side_effect=SSLERROR,
         ):
             call_command("importchannel", "network", "197934f144305350b5820c7c4dd8e194")
-            dummy_job.check_for_cancel.assert_called_with()
+            cancel_mock.assert_called_with()
             import_channel_mock.assert_not_called()
 
     @patch(
         "kolibri.utils.file_transfer.FileDownload._run_download",
         side_effect=ReadTimeout("Read timed out."),
     )
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.check_for_cancel"
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.is_cancelled",
+        return_value=True,
+    )
     def test_remote_import_readtimeout(
         self,
-        get_current_job_mock,
+        is_cancelled_mock,
+        cancel_mock,
         sslerror_mock,
         start_progress_mock,
         import_channel_mock,
     ):
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         call_command("importchannel", "network", "197934f144305350b5820c7c4dd8e194")
-        dummy_job.check_for_cancel.assert_called_with()
+        cancel_mock.assert_called_with()
         import_channel_mock.assert_not_called()
 
-    @patch("kolibri.core.content.utils.channel_transfer.transfer.FileDownload")
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.transfer.FileDownload"
+    )
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.AsyncCommand.is_cancelled",
+        return_value=False,
+    )
     def test_remote_import_full_import(
         self,
-        get_current_job_mock,
+        is_cancelled_mock,
         FileDownloadMock,
         start_progress_mock,
         import_channel_mock,
     ):
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         # Get the current content cache key and sleep a bit to ensure
         # time has elapsed before it's updated.
         cache_key_before = ContentCacheKey.get_cache_key()
         time.sleep(0.01)
 
         call_command("importchannel", "network", "197934f144305350b5820c7c4dd8e194")
-        dummy_job.is_cancelled.assert_called()
+        is_cancelled_mock.assert_called()
         import_channel_mock.assert_called_with(
             "197934f144305350b5820c7c4dd8e194",
-            cancel_check=dummy_job.is_cancelled,
+            cancel_check=is_cancelled_mock,
             contentfolder=paths.get_content_dir_path(),
         )
 
@@ -617,13 +638,15 @@ class ImportChannelTestCase(TestCase):
         self.assertNotEqual(cache_key_before, cache_key_after)
 
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_url"
+        "kolibri.core.content.management.commands.importchannel.paths.get_content_database_file_url"
     )
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_path"
+        "kolibri.core.content.management.commands.importchannel.paths.get_content_database_file_path"
     )
-    @patch("kolibri.core.content.utils.channel_transfer.transfer.FileDownload")
-    @patch("kolibri.core.content.utils.channel_transfer.clear_channel_stats")
+    @patch(
+        "kolibri.core.content.management.commands.importchannel.transfer.FileDownload"
+    )
+    @patch("kolibri.core.content.management.commands.importchannel.clear_channel_stats")
     def test_remote_successful_import_clears_stats_cache(
         self,
         channel_stats_clear_mock,
@@ -2110,19 +2133,28 @@ class ExportChannelTestCase(TestCase):
     the_channel_id = "6199dde695db4ee4ab392222d5af1e5c"
 
     @patch(
-        "kolibri.core.content.utils.channel_transfer.paths.get_content_database_file_path"
+        "kolibri.core.content.management.commands.exportchannel.AsyncCommand.start_progress"
     )
-    @patch("kolibri.core.content.utils.channel_transfer.transfer.FileCopy")
-    @patch("kolibri.core.content.utils.channel_transfer.get_current_job")
+    @patch(
+        "kolibri.core.content.management.commands.exportchannel.paths.get_content_database_file_path"
+    )
+    @patch("kolibri.core.content.management.commands.exportchannel.transfer.FileCopy")
+    @patch(
+        "kolibri.core.content.management.commands.exportchannel.AsyncCommand.check_for_cancel"
+    )
+    @patch(
+        "kolibri.core.content.management.commands.exportchannel.AsyncCommand.is_cancelled",
+        return_value=True,
+    )
     def test_cancel_during_transfer(
         self,
-        get_current_job_mock,
+        is_cancelled_mock,
+        cancel_mock,
         FileCopyMock,
         local_path_mock,
+        start_progress_mock,
     ):
         # Make sure we clean up a database file that is canceled during export
-        dummy_job = create_dummy_job()
-        get_current_job_mock.return_value = dummy_job
         fd1, local_dest_path = tempfile.mkstemp()
         fd2, local_src_path = tempfile.mkstemp()
         os.close(fd1)
@@ -2131,9 +2163,9 @@ class ExportChannelTestCase(TestCase):
         FileCopyMock.return_value.run.side_effect = TransferCanceled()
         call_command("exportchannel", self.the_channel_id, local_dest_path)
         FileCopyMock.assert_called_with(
-            local_src_path, local_dest_path, cancel_check=dummy_job.is_cancelled
+            local_src_path, local_dest_path, cancel_check=is_cancelled_mock
         )
-        dummy_job.check_for_cancel.assert_called_with()
+        cancel_mock.assert_called_with()
         self.assertTrue(os.path.exists(local_dest_path))
 
 

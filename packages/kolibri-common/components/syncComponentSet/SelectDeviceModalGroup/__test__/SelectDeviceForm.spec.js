@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import SelectDeviceForm from '../SelectDeviceForm';
 import { fetchDevices, updateConnectionStatus } from '../api';
-import { ConnectionStatus, LocationTypes } from '../constants';
+import { ConnectionStatus } from '../constants';
 
 jest.mock('../api.js', () => ({
   fetchDevices: jest.fn(),
@@ -51,8 +51,8 @@ const devices = [
   },
 ];
 
-const staticDevices = devices.map(a => ({ ...a, location_type: LocationTypes.STATIC }));
-const dynamicDevices = devices.map(a => ({ ...a, location_type: LocationTypes.DYNAMIC }));
+const staticDevices = devices.map(a => ({ ...a, dynamic: false }));
+const dynamicDevices = devices.map(a => ({ ...a, dynamic: true }));
 
 function makeWrapper() {
   const wrapper = shallowMount(SelectDeviceForm);

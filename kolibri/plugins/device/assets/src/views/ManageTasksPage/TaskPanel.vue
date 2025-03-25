@@ -91,16 +91,10 @@
       </p>
     </div>
 
-    <KButtonGroup
+    <div
       class="buttons"
       :class="{ 'button-lift': taskIsRunning }"
     >
-      <KButton
-        v-if="taskIsFailed"
-        :text="coreString('retryAction')"
-        appearance="flat-button"
-        @click="$emit('restart')"
-      />
       <KButton
         v-if="taskIsCancellable || taskIsClearable"
         :disabled="taskIsCanceling"
@@ -108,7 +102,7 @@
         appearance="flat-button"
         @click="handleClick"
       />
-    </KButtonGroup>
+    </div>
   </div>
 
 </template>
@@ -486,8 +480,6 @@
   }
 
   .buttons {
-    display: flex;
-
     .task-panel-sm & {
       align-self: flex-end;
     }

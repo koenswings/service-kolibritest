@@ -63,7 +63,7 @@
             :primary="true"
             :text="coreString('continueAction')"
             :disabled="selectedFacilityId === ''"
-            @click="toContinue"
+            @click="to_continue"
           />
         </KButtonGroup>
       </slot>
@@ -76,7 +76,7 @@
 <script>
 
   import { useLocalStorage, useMemoize, computedAsync, get } from '@vueuse/core';
-  import { computed, ref, watch, inject } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import commonSyncElements from 'kolibri-common/mixins/commonSyncElements';
   import { NetworkLocationResource } from 'kolibri-common/apiResources/NetworkLocationResource';
@@ -230,9 +230,8 @@
         }
       }
 
-      const changeFacilityService = inject('changeFacilityService');
-      function toContinue() {
-        changeFacilityService.send({
+      function to_continue() {
+        this.changeFacilityService.send({
           type: 'CONTINUE',
         });
       }
@@ -249,7 +248,7 @@
         showAddAddressModal,
         facilityDisabled,
         handleAddedAddress,
-        toContinue,
+        to_continue,
       };
     },
     inject: ['changeFacilityService'],

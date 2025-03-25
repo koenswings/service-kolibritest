@@ -96,11 +96,11 @@
       description() {
         return this.$tr('description', {
           fullName: get(this.session, 'full_name', ''),
-          targetFacility: get(this.state, 'targetFacility.name', ''),
+          targetFacility: get(this.state, 'value.targetFacility.name', ''),
         });
       },
       showPasswordTextbox() {
-        return !get(this.state, 'targetFacility.learner_can_login_with_no_password', false);
+        return !get(this.state, 'value.targetFacility.learner_can_login_with_no_password', false);
       },
       isFormValid() {
         return this.isUsernameValid && (!this.showPasswordTextbox || this.isPasswordValid);

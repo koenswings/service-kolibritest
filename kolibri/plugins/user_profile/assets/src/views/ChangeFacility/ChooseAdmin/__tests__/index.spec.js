@@ -1,4 +1,3 @@
-import { computed } from 'vue';
 import { coreStoreFactory } from 'kolibri/store';
 import { shallowMount, mount } from '@vue/test-utils';
 import ChooseAdmin from '../index.vue';
@@ -15,10 +14,12 @@ function makeWrapper({ userId, sourceFacilityUsers } = {}) {
       changeFacilityService: {
         send: sendMachineEvent,
       },
-      state: computed(() => ({
-        userId,
-        sourceFacilityUsers,
-      })),
+      state: {
+        value: {
+          userId,
+          sourceFacilityUsers,
+        },
+      },
     },
   });
 }

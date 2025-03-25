@@ -2,10 +2,9 @@
 
   <ImmersivePage
     :route="homePageLink"
-    :appBarTitle="reportVisible ? exam.title : ''"
+    :appBarTitle="exam.title || ''"
   >
     <KPageContainer
-      v-if="reportVisible"
       :topMargin="50"
       class="container"
     >
@@ -33,17 +32,6 @@
         </p>
       </div>
     </KPageContainer>
-    <div v-else-if="showQuizReportComingSoonModal">
-      <KModal
-        :title="$tr('quizReportComingSoon')"
-        :submitText="coreString('closeAction')"
-        @submit="openHomePage()"
-      >
-        <div>
-          {{ $tr('quizReportComingSoonDetails') }}
-        </div>
-      </KModal>
-    </div>
   </ImmersivePage>
 
 </template>
@@ -55,9 +43,7 @@
   import ExamReport from 'kolibri-common/components/quizzes/QuizReport';
   import ImmersivePage from 'kolibri/components/pages/ImmersivePage';
   import useUser from 'kolibri/composables/useUser';
-  import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import { PageNames, ClassesPageNames } from '../constants';
-  import useLearnerResources from '../composables/useLearnerResources';
 
   export default {
     name: 'LearnExamReportViewer',
@@ -70,11 +56,9 @@
       ExamReport,
       ImmersivePage,
     },
-    mixins: [commonCoreStrings],
     setup() {
       const { full_name, user_id } = useUser();
-      const { activeClassesQuizzes } = useLearnerResources();
-      return { userName: full_name, userId: user_id, activeClassesQuizzes };
+      return { userName: full_name, userId: user_id };
     },
     computed: {
       ...mapState('examReportViewer', [
@@ -97,14 +81,6 @@
           name: PageNames.HOME,
         };
       },
-      reportVisible() {
-        const quiz = this.activeClassesQuizzes.find(q => q.id === this.exam.id) || this.exam;
-        // Show report if instant_report_visibility is true or null, or if quiz is closed
-        return quiz.instant_report_visibility !== false || quiz.archive;
-      },
-      showQuizReportComingSoonModal() {
-        return !this.reportVisible && !this.loading;
-      },
     },
     methods: {
       navigateTo(tryIndex, questionNumber, interaction) {
@@ -125,11 +101,6 @@
           params: { classId: this.classId },
         });
       },
-      openHomePage() {
-        this.$router.push({
-          name: PageNames.HOME,
-        });
-      },
     },
     $trs: {
       documentTitle: {
@@ -141,14 +112,6 @@
         message: 'This quiz cannot be displayed because some resources were deleted',
         context:
           'Error message a user sees if there was a problem accessing a quiz report page. This is because the resource has been removed.',
-      },
-      quizReportComingSoon: {
-        message: 'Quiz report coming soon',
-        context: 'Message displayed when a quiz report is not yet available.',
-      },
-      quizReportComingSoonDetails: {
-        message: 'You can see your quiz report when your coach shares it',
-        context: 'Details message displayed when a quiz report is not yet available.',
       },
     },
   };

@@ -10,7 +10,6 @@
     <template #menu>
       <KDropdownMenu
         :options="fileOptions"
-        maxWidth="none"
         @select="download"
       />
     </template>

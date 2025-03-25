@@ -1,6 +1,5 @@
 import { get, set } from '@vueuse/core';
 import invert from 'lodash/invert';
-import isEqual from 'lodash/isEqual';
 import logger from 'kolibri-logging';
 import { computed, getCurrentInstance, inject, provide, ref, watch } from 'vue';
 import ContentNodeResource from 'kolibri-common/apiResources/ContentNodeResource';
@@ -158,9 +157,6 @@ export default function useBaseSearch({
   store,
   router,
   baseurl,
-  filters,
-  searchResultsRouteName,
-  reloadOnDescendantChange = true,
   fetchContentNodeProgress,
 }) {
   // Get store and router references from the curent instance
@@ -211,14 +207,9 @@ export default function useBaseSearch({
       } else {
         delete query.keywords;
       }
-
-      const nextRoute = { ...get(route), query };
-      if (searchResultsRouteName) {
-        nextRoute.name = searchResultsRouteName;
-      }
       // Just catch an error from making a redundant navigation rather
       // than try to precalculate this.
-      router.push(nextRoute).catch(() => {});
+      router.push({ ...get(route), query }).catch(() => {});
     },
   });
 
@@ -251,16 +242,10 @@ export default function useBaseSearch({
       getParams.lft__gt = descValue.lft;
       getParams.rght__lt = descValue.rght;
     }
-
-    if (filters) {
-      Object.assign(getParams, filters);
-    }
-
     if (get(displayingSearchResults)) {
       getParams.max_results = 25;
       const terms = get(searchTerms);
       set(searchResultsLoading, true);
-
       for (const key of searchKeys) {
         if (key === 'categories') {
           if (terms[key][AllCategories]) {
@@ -285,7 +270,6 @@ export default function useBaseSearch({
       if (get(isUserLoggedIn)) {
         fetchContentNodeProgress?.(getParams);
       }
-
       ContentNodeResource.fetchCollection({ getParams }).then(data => {
         set(_results, data.results || []);
         set(more, data.more);
@@ -328,7 +312,7 @@ export default function useBaseSearch({
         [key]: '',
       });
     } else {
-      const keyObject = { ...get(searchTerms)[key] };
+      const keyObject = get(searchTerms)[key];
       delete keyObject[value];
       set(searchTerms, {
         ...get(searchTerms),
@@ -341,13 +325,9 @@ export default function useBaseSearch({
     set(searchTerms, {});
   }
 
-  watch(searchTerms, (newValue, oldValue) => {
-    if (!isEqual(newValue, oldValue)) {
-      search();
-    }
-  });
+  watch(searchTerms, search);
 
-  if (descendant && reloadOnDescendantChange) {
+  if (descendant) {
     watch(descendant, newValue => {
       if (newValue) {
         search();

@@ -47,7 +47,6 @@
   import { ContentLevels, AccessibilityCategories } from 'kolibri/constants';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import { injectBaseSearch } from 'kolibri-common/composables/useBaseSearch';
-  import { validateObject } from 'kolibri/utils/objectSpecs';
 
   export default {
     name: 'SelectGroup',
@@ -71,20 +70,8 @@
         type: Object,
         required: true,
         validator(value) {
-          return validateObject(value, {
-            accessibility_labels: {
-              type: Object,
-              required: true,
-            },
-            languages: {
-              type: Object,
-              required: true,
-            },
-            grade_levels: {
-              type: Object,
-              required: true,
-            },
-          });
+          const inputKeys = ['accessibility_labels', 'languages', 'grade_levels'];
+          return inputKeys.every(k => Object.prototype.hasOwnProperty.call(value, k));
         },
       },
     },

@@ -65,13 +65,13 @@
 
 <script>
 
+  import { mapGetters } from 'vuex';
   import PermissionsIcon from 'kolibri-common/components/labels/PermissionsIcon';
   import memoize from 'lodash/memoize';
   import { PermissionTypes } from 'kolibri/constants';
   import CoreTable from 'kolibri/components/CoreTable';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import useUser from 'kolibri/composables/useUser';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
 
   export default {
     name: 'UserGrid',
@@ -82,8 +82,7 @@
     mixins: [commonCoreStrings],
     setup() {
       const { currentUserId } = useUser();
-      const { facilities } = useFacilities();
-      return { currentUserId, facilities };
+      return { currentUserId };
     },
     props: {
       filterText: {
@@ -105,6 +104,7 @@
       },
     },
     computed: {
+      ...mapGetters(['facilities']),
       emptyMessage() {
         return this.$tr('noUsersMatching', { searchFilter: this.filterText });
       },

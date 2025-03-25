@@ -32,14 +32,13 @@
         </KCheckbox>
         <KCheckbox
           :checked="allUngroupedLearnresIsSelected"
-          :disabled="isAllUngroupedLearnersDisabled"
+          :disabled="disabled"
           @change="selectAllUngroupedLearners($event)"
         >
           <KLabeledIcon
             :label="$tr('allUngroupedLearnres')"
             icon="people"
             class="font-size-14"
-            :color="isAllUngroupedLearnersDisabled ? $themeTokens.textDisabled : null"
           />
         </KCheckbox>
       </section>
@@ -133,13 +132,7 @@
           })
           .map(learner => learner.id);
       },
-      isAllUngroupedLearnersDisabled() {
-        return this.disabled || this.ungroupedLearnersIds.length === 0;
-      },
       allUngroupedLearnresIsSelected() {
-        if (this.ungroupedLearnersIds.length === 0) {
-          return false;
-        }
         return this.ungroupedLearnersIds.every(learnerId =>
           this.workingAdHocLearners.includes(learnerId),
         );

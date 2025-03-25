@@ -42,7 +42,6 @@
   import CoreTable from 'kolibri/components/CoreTable';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import useUser from 'kolibri/composables/useUser';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import commonCoach from './common';
   import CoachAppBarPage from './CoachAppBarPage';
 
@@ -54,15 +53,19 @@
     },
     mixins: [commonCoach, commonCoreStrings],
     setup() {
-      const { facility_id } = useUser();
-      const { facilities, userIsMultiFacilityAdmin } = useFacilities();
-      return { facility_id, userIsMultiFacilityAdmin, facilities };
+      const { facility_id, userIsMultiFacilityAdmin } = useUser();
+      return { facility_id, userIsMultiFacilityAdmin };
     },
     props: {
       subtopicName: {
         type: String,
         required: false,
         default: null,
+      },
+    },
+    computed: {
+      facilities() {
+        return this.$store.state.core.facilities;
       },
     },
     beforeMount() {

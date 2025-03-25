@@ -1,7 +1,7 @@
 import uniq from 'lodash/uniq';
 import { ref, computed, provide, inject } from 'vue';
 
-export default function useAccordion({ multiple } = {}) {
+export default function useAccordion() {
   const _items = ref([]);
   const _expandedItems = ref([]);
 
@@ -23,11 +23,7 @@ export default function useAccordion({ multiple } = {}) {
   }
 
   function expand(uid) {
-    if (multiple) {
-      _expandedItems.value = uniq([..._expandedItems.value, uid]);
-    } else {
-      _expandedItems.value = [uid];
-    }
+    _expandedItems.value = uniq([..._expandedItems.value, uid]);
   }
 
   function collapse(uid) {
@@ -39,9 +35,6 @@ export default function useAccordion({ multiple } = {}) {
   }
 
   function expandAll() {
-    if (!multiple) {
-      throw new Error('Cannot expand all items in non-multiple mode');
-    }
     _expandedItems.value = [..._items.value];
   }
 
@@ -50,9 +43,6 @@ export default function useAccordion({ multiple } = {}) {
   }
 
   const canExpandAll = computed(() => {
-    if (!multiple) {
-      return false;
-    }
     return _items.value.length !== _expandedItems.value.length;
   });
 

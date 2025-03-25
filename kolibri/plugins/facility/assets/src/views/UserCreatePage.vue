@@ -124,7 +124,7 @@
 <script>
 
   import every from 'lodash/every';
-  import { mapState, mapGetters } from 'vuex';
+  import { mapState, mapGetters, mapActions } from 'vuex';
   import { UserKinds, ERROR_CONSTANTS, DemographicConstants } from 'kolibri/constants';
   import CatchErrors from 'kolibri/utils/CatchErrors';
   import GenderSelect from 'kolibri-common/components/userAccounts/GenderSelect';
@@ -135,7 +135,6 @@
   import PasswordTextbox from 'kolibri-common/components/userAccounts/PasswordTextbox';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import ExtraDemographics from 'kolibri-common/components/ExtraDemographics';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import IdentifierTextbox from './IdentifierTextbox';
 
   const { NOT_SPECIFIED } = DemographicConstants;
@@ -158,13 +157,6 @@
       ExtraDemographics,
     },
     mixins: [commonCoreStrings],
-    setup() {
-      const { getFacilityConfig, facilityConfig } = useFacilities();
-      return {
-        getFacilityConfig,
-        facilityConfig,
-      };
-    },
     data() {
       return {
         fullName: '',
@@ -189,7 +181,7 @@
       };
     },
     computed: {
-      ...mapGetters(['activeFacilityId']),
+      ...mapGetters(['activeFacilityId', 'facilityConfig']),
       ...mapState('userManagement', ['facilityUsers']),
       showPasswordInput() {
         if (this.facilityConfig.learner_can_login_with_no_password) {
@@ -234,6 +226,7 @@
       });
     },
     methods: {
+      ...mapActions(['getFacilityConfig']),
       goToUserManagementPage(onComplete) {
         this.$router.push(this.$store.getters.facilityPageLinks.UserPage, onComplete);
       },

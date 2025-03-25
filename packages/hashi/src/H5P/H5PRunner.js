@@ -27,7 +27,7 @@ for (const doNotLogVerb of doNotLogVerbs) {
 }
 // These verbs are reported too much by H5P leading to spammy responses,
 // so we debounce logging of these responses.
-const debounceVerbs = ['interacted'];
+const debounceVerbs = ['answered', 'interacted'];
 // Time in seconds to debounce by.
 const debounceDelay = 5;
 // Max time that debounce should delay by.
@@ -341,7 +341,7 @@ export default class H5PRunner {
         } else if (debouncedHandlers[statement.verb.id]) {
           debouncedHandlers[statement.verb.id](statement);
         } else {
-          contentWindow.xAPI.sendStatement(statement, true).catch(err => {
+          contentWindow.xAPI.sendStatement(event.data.statement, true).catch(err => {
             // eslint-disable-next-line no-console
             console.error('Statement: ', statement, 'gave the following error: ', err);
           });

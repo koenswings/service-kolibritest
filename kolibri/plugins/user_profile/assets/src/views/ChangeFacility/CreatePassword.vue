@@ -79,7 +79,7 @@
       description() {
         return this.$tr('description', {
           username: get(this.session, 'username', ''),
-          targetFacility: get(this.state, 'targetFacility.name', ''),
+          targetFacility: get(this.state, 'value.targetFacility.name', ''),
         });
       },
     },
@@ -96,7 +96,7 @@
         this.changeFacilityService.send({
           type: 'CONTINUE',
           value: {
-            username: get(this.state, 'targetAccount.username', ''),
+            username: get(this.state, 'value.targetAccount.username', ''),
             password: this.formData.password,
           },
         });

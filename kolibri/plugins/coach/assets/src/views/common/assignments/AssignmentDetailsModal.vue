@@ -30,8 +30,8 @@
 
           <KGridItem
             :layout4="{ span: 3 }"
-            :layout8="{ span: assignmentIsQuiz ? 3 : 7 }"
-            :layout12="{ span: assignmentIsQuiz ? 5 : 11 }"
+            :layout8="{ span: 7 }"
+            :layout12="{ span: 11 }"
           >
             <KTextbox
               ref="titleField"
@@ -43,47 +43,15 @@
               :invalidText="titleIsInvalidText"
               :showInvalidText="titleIsInvalid"
               :disabled="disabled || formIsSubmitted"
-              :style="{ marginLeft: windowIsLarge ? '-1em' : 0 }"
               @input="showTitleError = false"
               @keydown.enter="submitData"
             />
           </KGridItem>
-          <template v-if="assignmentIsQuiz">
-            <KGridItem
-              :layout4="{ span: 1 }"
-              :layout8="{ span: 1, alignment: 'left' }"
-              :layout12="{ span: 1, alignment: 'left' }"
-            >
-              <br >
-            </KGridItem>
-            <KGridItem
-              :layout4="{ span: 3 }"
-              :layout8="{ span: 3 }"
-              :layout12="{ span: 5 }"
-            >
-              <KSelect
-                :label="reportVisibilityLabel$()"
-                :options="reportVisibilityOptions"
-                :value="reportVisibilityValue"
-                :help="
-                  instantReportVisibility
-                    ? afterLearnerSubmitsQuizDescription$()
-                    : afterCoachEndsQuizDescription$()
-                "
-                :style="windowIsSmall ? 'margin-left: -1em' : 'margin-left: -3em'"
-                class="visibility-score-select"
-                @change="option => (instantReportVisibility = option.value)"
-              />
-            </KGridItem>
-          </template>
-          <!--Align with the title input-->
           <KGridItem
             :layout4="{ span: 1 }"
             :layout8="{ span: 1 }"
             :layout12="{ span: 1 }"
-          >
-            <div></div>
-          </KGridItem>
+          />
           <KGridItem
             :layout4="{ span: 3 }"
             :layout8="{ span: 7 }"
@@ -96,7 +64,6 @@
               :maxlength="200"
               :disabled="disabled || formIsSubmitted"
               :textArea="true"
-              :style="{ marginLeft: windowIsLarge ? '-1em' : 0 }"
             />
           </KGridItem>
         </KGrid>
@@ -165,7 +132,6 @@
   import UiAlert from 'kolibri-design-system/lib/keen/UiAlert';
   import BottomAppBar from 'kolibri/components/BottomAppBar';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useKResponsiveWindow from 'kolibri-design-system/lib/composables/useKResponsiveWindow';
   import { coachStrings } from '../../common/commonCoachStrings';
   import RecipientSelector from './RecipientSelector';
   import SidePanelRecipientsSelector from './SidePanelRecipientsSelector';
@@ -180,7 +146,6 @@
     },
     mixins: [commonCoreStrings],
     setup() {
-      const { windowIsSmall, windowIsLarge } = useKResponsiveWindow();
       const {
         recipientsLabel$,
         descriptionLabel$,
@@ -189,15 +154,8 @@
         saveQuizError$,
         quizDuplicateTitleError$,
         lessonDuplicateTitleError$,
-        reportVisibilityLabel$,
-        afterLearnerSubmitsQuizLabel$,
-        afterCoachEndsQuizLabel$,
-        afterLearnerSubmitsQuizDescription$,
-        afterCoachEndsQuizDescription$,
       } = coachStrings;
       return {
-        windowIsSmall,
-        windowIsLarge,
         recipientsLabel$,
         descriptionLabel$,
         titleLabel$,
@@ -205,11 +163,6 @@
         saveQuizError$,
         quizDuplicateTitleError$,
         lessonDuplicateTitleError$,
-        reportVisibilityLabel$,
-        afterLearnerSubmitsQuizLabel$,
-        afterCoachEndsQuizLabel$,
-        afterLearnerSubmitsQuizDescription$,
-        afterCoachEndsQuizDescription$,
       };
     },
     props: {
@@ -264,7 +217,6 @@
         formIsSubmitted: false,
         showServerError: false,
         showTitleError: false,
-        instantReportVisibility: this.assignment.instant_report_visibility,
       };
     },
     computed: {
@@ -332,21 +284,7 @@
           assignments: this.selectedCollectionIds,
           active: this.activeIsSelected,
           learner_ids: this.adHocLearners,
-          instant_report_visibility: this.instantReportVisibility,
         };
-      },
-      reportVisibilityOptions() {
-        return [
-          { label: this.afterLearnerSubmitsQuizLabel$(), value: true },
-          { label: this.afterCoachEndsQuizLabel$(), value: false },
-        ];
-      },
-      reportVisibilityValue() {
-        return (
-          this.reportVisibilityOptions.find(
-            option => option.value === this.instantReportVisibility,
-          ) || {}
-        );
       },
     },
     watch: {
@@ -361,9 +299,6 @@
       },
       adHocLearners() {
         this.$emit('update', { learner_ids: this.adHocLearners });
-      },
-      instantReportVisibility() {
-        this.$emit('update', { instant_report_visibility: this.instantReportVisibility });
       },
       submitObject() {
         if (this.showServerError) {
@@ -468,21 +403,7 @@
   /deep/ .textbox {
     width: 100% !important;
     max-width: 100%;
-  }
-
-  /deep/ .ui-select-feedback {
-    background: #ffffff !important;
-  }
-
-  /deep/ .ui-select-label {
-    background: #f5f5f5;
-    border-bottom-color: #666666;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-  }
-
-  .visibility-score-select {
-    border-bottom: 0 !important;
+    margin-left: -1em;
   }
 
   .style-icon {
@@ -490,13 +411,6 @@
     height: 2em;
     margin-top: 0.5em;
     margin-left: 1em;
-  }
-
-  .checkmark-style-icon {
-    width: 2em;
-    height: 2em;
-    margin-top: 0.5em;
-    margin-left: -1em;
   }
 
   fieldset {

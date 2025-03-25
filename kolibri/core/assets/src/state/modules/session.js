@@ -45,6 +45,10 @@ export default {
     isFacilityAdmin(state) {
       return state.kind.includes(UserKinds.ADMIN);
     },
+    // An "Multi-Facility Admin" is a superuser for a device with 2+ facilities
+    userIsMultiFacilityAdmin(state, getters, rootState) {
+      return getters.isSuperuser && rootState.core.facilities.length > 1;
+    },
     getUserPermissions(state) {
       const permissions = {};
       permissions.can_manage_content = state.can_manage_content;

@@ -78,7 +78,7 @@
 
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import BottomAppBar from 'kolibri/components/BottomAppBar';
-  import { computed, getCurrentInstance, inject, ref, watch } from 'vue';
+  import { computed, inject, ref, watch } from 'vue';
   import get from 'lodash/get';
   import remoteFacilityUserData from '../../../composables/useRemoteFacility';
   import commonProfileStrings from '../../commonProfileStrings';
@@ -156,9 +156,9 @@
         });
       }
 
-      const component = getCurrentInstance().proxy;
       function handleContinue() {
         const facility = get(state, 'value.targetFacility', {});
+        const component = this;
         remoteFacilityUserData(
           facility.url,
           facility.id,

@@ -473,7 +473,8 @@
         }
       },
       gridOffset() {
-        const paddingTop = this.deviceId ? (this.windowIsLarge ? '64px' : '32px') : null;
+        const paddingTop =
+          !this.windowIsLarge && (this.isLocalLibraryEmpty || this.deviceId) ? '140px' : '110px';
         return this.isRtl
           ? { paddingRight: `${this.sidePanelWidth + 24}px`, paddingTop }
           : { paddingLeft: `${this.sidePanelWidth + 24}px`, paddingTop };
@@ -622,10 +623,11 @@
   }
 
   .filter-button {
-    margin-top: 35px;
+    margin-top: 30px;
   }
 
   .main-grid {
+    padding-top: 110px;
     padding-right: 24px;
     padding-bottom: 96px;
   }

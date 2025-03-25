@@ -30,6 +30,7 @@
   import useSnackbar from 'kolibri/composables/useSnackbar';
   import commonCoach from '../../common';
   import CoachImmersivePage from '../../../views/CoachImmersivePage';
+  import { PageNames } from '../../../constants';
   import LessonContentPreview from './LessonContentPreview';
 
   export default {
@@ -65,6 +66,16 @@
       returnBackRoute() {
         const lastRoute = get(this.$route, ['query', 'last']);
         if (lastRoute) {
+          // HACK to fix #7583 and #7584
+          if (lastRoute === PageNames.LESSON_SUMMARY) {
+            return {
+              name: PageNames.LESSON_RESOURCE_SELECTION,
+              params: {
+                topicId: this.currentContentNode.parent,
+              },
+              query: this.$route.query,
+            };
+          }
           return this.backRouteForQuery(this.$route.query);
         }
 

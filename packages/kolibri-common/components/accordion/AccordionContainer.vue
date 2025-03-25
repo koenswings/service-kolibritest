@@ -36,10 +36,8 @@
 
   export default {
     name: 'AccordionContainer',
-    setup(props, { slots }) {
-      const { canExpandAll, canCollapseAll, collapseAll, expandAll } = useAccordion({
-        multiple: props.multiple,
-      });
+    setup(prop, { slots }) {
+      const { canExpandAll, canCollapseAll, collapseAll, expandAll } = useAccordion();
 
       const hasHeaderSlot = computed(() => !!slots.header);
 
@@ -55,13 +53,6 @@
       headerAppearanceOverrides: {
         type: [Object, String],
         default: null,
-      },
-      /**
-       * Whether the accordion can have multiple items expanded at once.
-       */
-      multiple: {
-        type: Boolean,
-        default: true,
       },
     },
   };

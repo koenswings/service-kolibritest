@@ -82,7 +82,6 @@
           <KButton
             ref="addQuestionsButton"
             primary
-            hasDropdown
             :text="coreString('optionsLabel')"
           >
             <template #menu>
@@ -142,6 +141,9 @@
             <h2 :style="{ color: $themeTokens.annotation }">
               {{ questionsLabel$() }}
             </h2>
+            <p :style="{ color: $themeTokens.annotation, fontSize: '.75rem' }">
+              {{ numberOfReplacementsAvailable$({ count: replacementQuestionPool.length }) }}
+            </p>
           </KGridItem>
           <KGridItem
             class="right-side-heading"
@@ -152,7 +154,6 @@
             <KButton
               primary
               :text="coreString('optionsLabel')"
-              hasDropdown
             >
               <template #menu>
                 <KDropdownMenu
@@ -167,54 +168,126 @@
           </KGridItem>
         </KGrid>
 
-        <QuestionsAccordion
-          :questions="activeQuestions"
-          :selectedQuestions="selectedActiveQuestions"
-          :getQuestionContent="question => activeResourceMap[question.exercise_id]"
-          @selectQuestions="addQuestionsToSelection"
-          @deselectQuestions="removeQuestionsFromSelection"
-          @error="err => $emit('error', err)"
-          @sort="handleQuestionOrderChange"
-        >
-          <template #header-trailing-actions>
-            <KIconButton
-              icon="autoReplace"
-              :ariaLabel="autoReplaceAction$()"
-              :tooltip="autoReplaceAction$()"
-              :disabled="!isSelectedQuestionsAutoReplaceable"
-              @click="handleBulkAutoReplaceQuestionsClick"
-            />
-            <KIconButton
-              icon="refresh"
-              :ariaLabel="replaceAction$()"
-              :tooltip="replaceAction$()"
-              :disabled="selectedActiveQuestions.length === 0"
-              @click="handleBulkReplacementQuestionsClick"
-            />
-            <KIconButton
-              icon="trash"
-              :tooltip="coreString('deleteAction')"
-              :aria-label="coreString('deleteAction')"
-              :disabled="selectedActiveQuestions.length === 0"
-              @click="deleteQuestions"
-            />
+        <AccordionContainer>
+          <template #header="{ canExpandAll, expandAll, canCollapseAll, collapseAll }">
+            <div class="questions-accordion-header">
+              <div>
+                <KCheckbox
+                  ref="selectAllCheckbox"
+                  class="select-all-box"
+                  :label="selectAllLabel$()"
+                  :checked="allQuestionsSelected"
+                  :indeterminate="selectAllIsIndeterminate"
+                  @change="() => selectAllQuestions()"
+                  @click.stop="() => {}"
+                />
+              </div>
+              <div class="trailing-actions">
+                <KIconButton
+                  icon="expandAll"
+                  :tooltip="expandAll$()"
+                  :disabled="!canExpandAll"
+                  @click="expandAll"
+                />
+                <KIconButton
+                  icon="collapseAll"
+                  :tooltip="collapseAll$()"
+                  :disabled="!canCollapseAll"
+                  @click="collapseAll"
+                />
+                <KIconButton
+                  icon="refresh"
+                  :tooltip="replaceAction$()"
+                  :disabled="!canReplaceQuestions"
+                  @click="handleReplaceSelection()"
+                />
+                <KIconButton
+                  icon="trash"
+                  :tooltip="coreString('deleteAction')"
+                  :aria-label="coreString('deleteAction')"
+                  :disabled="selectedActiveQuestions.length === 0"
+                  @click="() => deleteQuestions()"
+                />
+              </div>
+            </div>
           </template>
-          <template #question-trailing-actions="{ question }">
-            <KIconButton
-              icon="autoReplace"
-              :ariaLabel="autoReplaceAction$()"
-              :tooltip="autoReplaceAction$()"
-              :disabled="!isQuestionAutoReplaceable(question)"
-              @click="handleAutoReplaceQuestionClick(question, $event)"
-            />
-            <KIconButton
-              icon="refresh"
-              :ariaLabel="replaceAction$()"
-              :tooltip="replaceAction$()"
-              @click="handleReplaceQuestionClick(question, $event)"
-            />
-          </template>
-        </QuestionsAccordion>
+
+          <DragContainer
+            key="drag-container"
+            :items="activeQuestions"
+            @sort="handleQuestionOrderChange"
+            @dragStart="handleDragStart"
+          >
+            <transition-group
+              tag="div"
+              name="list"
+              class="wrapper"
+            >
+              <Draggable
+                v-for="(question, index) in activeQuestions"
+                :key="`drag-${question.item}`"
+                tabindex="-1"
+                :style="{
+                  background: $themeTokens.surface,
+                }"
+              >
+                <AccordionItem
+                  :title="
+                    displayQuestionTitle(question, activeResourceMap[question.exercise_id].title)
+                  "
+                  :aria-selected="selectedActiveQuestions.includes(question.item)"
+                  :headerAppearanceOverrides="{
+                    userSelect: dragActive ? 'none !important' : 'text',
+                  }"
+                >
+                  <template #leading-actions>
+                    <DragHandle>
+                      <div>
+                        <DragSortWidget
+                          class="sort-widget"
+                          :moveUpText="upLabel$"
+                          :moveDownText="downLabel$"
+                          :noDrag="true"
+                          :isFirst="index === 0"
+                          :isLast="index === activeQuestions.length - 1"
+                          @moveUp="() => handleKeyboardDragUp(index, activeQuestions)"
+                          @moveDown="() => handleKeyboardDragDown(index, activeQuestions)"
+                        />
+                      </div>
+                    </DragHandle>
+                    <KCheckbox
+                      class="accordion-item-checkbox"
+                      :checked="selectedActiveQuestions.includes(question.item)"
+                      @change="(_, $event) => handleQuestionCheckboxChange(question.item, $event)"
+                    />
+                  </template>
+                  <template #content>
+                    <div
+                      :id="`question-panel-${question.item}`"
+                      :style="{ userSelect: dragActive ? 'none !important' : 'text' }"
+                    >
+                      <ContentRenderer
+                        :ref="`contentRenderer-${question.item}`"
+                        :kind="activeResourceMap[question.exercise_id].kind"
+                        :lang="activeResourceMap[question.exercise_id].lang"
+                        :files="activeResourceMap[question.exercise_id].files"
+                        :available="activeResourceMap[question.exercise_id].available"
+                        :itemId="question.question_id"
+                        :assessment="true"
+                        :allowHints="false"
+                        :interactive="false"
+                        @interaction="() => null"
+                        @updateProgress="() => null"
+                        @updateContentState="() => null"
+                        @error="err => $emit('error', err)"
+                      />
+                    </div>
+                  </template>
+                </AccordionItem>
+              </Draggable>
+            </transition-group>
+          </DragContainer>
+        </AccordionContainer>
       </div>
     </KTabsPanel>
 
@@ -239,19 +312,27 @@
 
 <script>
 
-  import uniq from 'lodash/uniq';
+  import { ref } from 'vue';
   import logging from 'kolibri-logging';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import {
     displaySectionTitle,
     enhancedQuizManagementStrings,
+    displayQuestionTitle,
   } from 'kolibri-common/strings/enhancedQuizManagementStrings';
+  import DragContainer from 'kolibri-common/components/sortable/DragContainer';
+  import DragHandle from 'kolibri-common/components/sortable/DragHandle';
+  import DragSortWidget from 'kolibri-common/components/sortable/DragSortWidget';
+  import Draggable from 'kolibri-common/components/sortable/Draggable';
   import { MAX_QUESTIONS_PER_QUIZ_SECTION } from 'kolibri/constants';
+  import AccordionItem from 'kolibri-common/components/accordion/AccordionItem';
+  import AccordionContainer from 'kolibri-common/components/accordion/AccordionContainer';
+  import { searchAndFilterStrings } from 'kolibri-common/strings/searchAndFilterStrings';
   import useSnackbar from 'kolibri/composables/useSnackbar';
   import { injectQuizCreation } from '../../../composables/useQuizCreation';
   import commonCoach from '../../common';
   import { PageNames } from '../../../constants';
-  import QuestionsAccordion from '../../common/QuestionsAccordion.vue';
+  import useDrag from './useDrag.js';
   import TabsWithOverflow from './TabsWithOverflow';
 
   const logger = logging.getLogger(__filename);
@@ -259,12 +340,18 @@
   export default {
     name: 'CreateQuizSection',
     components: {
+      AccordionContainer,
+      AccordionItem,
+      DragContainer,
+      Draggable,
+      DragSortWidget,
+      DragHandle,
       TabsWithOverflow,
-      QuestionsAccordion,
     },
     mixins: [commonCoreStrings, commonCoach],
     setup() {
       const {
+        selectAllLabel$,
         addSectionLabel$,
         quizSectionsLabel$,
         addQuestionsLabel$,
@@ -274,38 +361,47 @@
         editSectionLabel$,
         deleteSectionLabel$,
         replaceAction$,
-        autoReplaceAction$,
         questionsLabel$,
+        numberOfReplacementsAvailable$,
         sectionDeletedNotification$,
         deleteConfirmation$,
-        numberOfQuestionsReplaced$,
         questionsDeletedNotification$,
+        expandAll$,
+        collapseAll$,
       } = enhancedQuizManagementStrings;
+
+      const { upLabel$, downLabel$ } = searchAndFilterStrings;
 
       const {
         // Methods
         updateSection,
+        allQuestionsSelected,
+        selectAllIsIndeterminate,
         deleteActiveSelectedQuestions,
         addSection,
         removeSection,
+        selectAllQuestions,
+        replacementQuestionPool,
         // Computed
-        addQuestionsToSelection,
-        removeQuestionsFromSelection,
+        toggleQuestionInSelection,
         allSections,
         activeSectionIndex,
         activeSection,
         activeResourceMap,
         activeQuestions,
-        clearSelectedQuestions,
         selectedActiveQuestions,
-        setQuestionItemsToReplace,
-        autoReplaceQuestions,
-        activeExercisesUnusedQuestionsMap,
       } = injectQuizCreation();
+
+      const { moveUpOne, moveDownOne } = useDrag();
+      const dragActive = ref(false);
 
       const { createSnackbar } = useSnackbar();
 
       return {
+        dragActive,
+        expandAll$,
+        collapseAll$,
+        selectAllLabel$,
         quizSectionsLabel$,
         addSectionLabel$,
         addQuestionsLabel$,
@@ -316,40 +412,52 @@
         deleteSectionLabel$,
         replaceAction$,
         questionsLabel$,
-        autoReplaceAction$,
-        numberOfQuestionsReplaced$,
+        numberOfReplacementsAvailable$,
         sectionDeletedNotification$,
         deleteConfirmation$,
         questionsDeletedNotification$,
 
-        addQuestionsToSelection,
-        removeQuestionsFromSelection,
+        toggleQuestionInSelection,
+        selectAllQuestions,
         updateSection,
+        allQuestionsSelected,
+        selectAllIsIndeterminate,
         deleteActiveSelectedQuestions,
         addSection,
         removeSection,
         displaySectionTitle,
-        clearSelectedQuestions,
-        setQuestionItemsToReplace,
-        autoReplaceQuestions,
+        displayQuestionTitle,
+
+        moveDownOne,
+        moveUpOne,
 
         // Computed
         allSections,
         activeSectionIndex,
         activeSection,
         activeResourceMap,
+        replacementQuestionPool,
         activeQuestions,
         selectedActiveQuestions,
-        activeExercisesUnusedQuestionsMap,
+
         createSnackbar,
+        upLabel$,
+        downLabel$,
       };
     },
     data() {
       return {
         showDeleteConfirmation: false,
+        showNotEnoughResourcesModal: false,
       };
     },
     computed: {
+      canReplaceQuestions() {
+        return (
+          this.selectedActiveQuestions.length > 0 &&
+          this.selectedActiveQuestions.length <= this.replacementQuestionPool.length
+        );
+      },
       tabsWrapperStyles() {
         return {
           paddingTop: '1rem',
@@ -397,32 +505,6 @@
           },
         ];
       },
-      isSelectedQuestionsAutoReplaceable() {
-        if (this.selectedActiveQuestions.length === 0) {
-          return false;
-        }
-
-        const questions = this.selectedActiveQuestions
-          .map(questionItem => this.activeQuestions.find(q => q.item === questionItem))
-          .filter(Boolean);
-
-        const questionCountPerExercise = {};
-        questions.forEach(question => {
-          if (!questionCountPerExercise[question.exercise_id]) {
-            questionCountPerExercise[question.exercise_id] = 0;
-          }
-          questionCountPerExercise[question.exercise_id] += 1;
-        });
-
-        // Return true if the number of available questions for each exercise is greater
-        // than or equal to the number of questions we need to replace
-        return Object.entries(questionCountPerExercise).every(([exerciseId, count]) => {
-          if (!this.activeExercisesUnusedQuestionsMap[exerciseId]?.length) {
-            return false;
-          }
-          return this.activeExercisesUnusedQuestionsMap[exerciseId].length >= count;
-        });
-      },
     },
     created() {
       const { query } = this.$route;
@@ -453,45 +535,6 @@
           });
         }
       },
-      autoReplace(questions) {
-        this.autoReplaceQuestions(questions);
-        this.clearSelectedQuestions();
-        this.createSnackbar(this.numberOfQuestionsReplaced$({ count: questions.length }));
-      },
-      handleAutoReplaceQuestionClick(question, $event) {
-        this.autoReplace([question.item]);
-        $event.stopPropagation();
-      },
-      handleBulkAutoReplaceQuestionsClick() {
-        this.autoReplace(this.selectedActiveQuestions);
-      },
-      handleReplaceQuestionClick(question, $event) {
-        $event.stopPropagation();
-        this.setQuestionItemsToReplace([question.item]);
-        this.$router.push({
-          name: PageNames.QUIZ_PREVIEW_RESOURCE,
-          query: { contentId: question.exercise_id },
-        });
-      },
-      handleBulkReplacementQuestionsClick() {
-        const questions = this.selectedActiveQuestions
-          .map(questionItem => this.activeQuestions.find(q => q.item === questionItem))
-          .filter(Boolean);
-        const questionItems = questions.map(question => question.item);
-        const questionsExercises = uniq(questions.map(question => question.exercise_id));
-
-        this.setQuestionItemsToReplace(questionItems);
-        if (questionsExercises.length === 1 && questionsExercises[0]) {
-          this.$router.push({
-            name: PageNames.QUIZ_PREVIEW_RESOURCE,
-            query: { contentId: questionsExercises[0] },
-          });
-        } else {
-          this.$router.push({
-            name: PageNames.QUIZ_SELECT_RESOURCES_INDEX,
-          });
-        }
-      },
       handleConfirmDelete() {
         const section_title = displaySectionTitle(this.activeSection, this.activeSectionIndex);
         const newIndex = this.activeSectionIndex > 0 ? this.activeSectionIndex - 1 : 0;
@@ -502,6 +545,16 @@
           this.focusActiveSectionTab();
         });
         this.showDeleteConfirmation = false;
+      },
+      handleReplaceSelection() {
+        if (this.replacementQuestionPool.length < this.selectedActiveQuestions.length) {
+          this.showNotEnoughResourcesModal = true;
+        } else {
+          this.$router.push({
+            name: PageNames.QUIZ_REPLACE_QUESTIONS,
+            params: this.getCurrentRouteParams(),
+          });
+        }
       },
       handleActiveSectionAction(opt) {
         switch (opt.id) {
@@ -560,6 +613,7 @@
           questions: newArray,
         };
         this.updateSection(payload);
+        this.dragActive = false;
       },
       handleAddSection() {
         this.addSection();
@@ -567,6 +621,22 @@
           name: PageNames.QUIZ_SECTION_EDITOR,
           params: { sectionIndex: this.allSections.length - 1 },
         });
+      },
+      handleDragStart() {
+        // Used to mitigate the issue of text being selected while dragging
+        this.dragActive = true;
+      },
+      handleKeyboardDragDown(oldIndex, array) {
+        const newArray = this.moveDownOne(oldIndex, array);
+        this.handleQuestionOrderChange({ newArray });
+      },
+      handleKeyboardDragUp(oldIndex, array) {
+        const newArray = this.moveUpOne(oldIndex, array);
+        this.handleQuestionOrderChange({ newArray });
+      },
+      handleQuestionCheckboxChange(item, $event) {
+        $event.stopPropagation();
+        this.toggleQuestionInSelection(item);
       },
       openSelectResources() {
         this.$router.push({
@@ -578,9 +648,6 @@
         const count = this.selectedActiveQuestions.length;
         this.deleteActiveSelectedQuestions();
         this.createSnackbar(this.questionsDeletedNotification$({ count }));
-      },
-      isQuestionAutoReplaceable(question) {
-        return this.activeExercisesUnusedQuestionsMap[question.exercise_id].length > 0;
       },
     },
   };
@@ -696,6 +763,10 @@
     max-width: 25rem;
   }
 
+  .accordion-item-checkbox {
+    margin-left: 0.5em;
+  }
+
   /deep/ .checkbox-icon {
     top: 2px;
   }
@@ -706,6 +777,17 @@
 
   /deep/ .overflow-tabs svg {
     top: 5px !important;
+  }
+
+  .select-all-box {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1.5em;
+
+    // Vertical centering here into the KCheckbox
+    /deep/ & label {
+      line-height: 28px;
+    }
   }
 
   .right-side-heading {
@@ -735,6 +817,18 @@
   // This makes sure that the keyboard focus ring is visible on the section tabs
   /deep/ .tab {
     outline-offset: -5px !important;
+  }
+
+  .questions-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 8px;
+
+    .trailing-actions {
+      display: flex;
+      align-items: center;
+    }
   }
 
 </style>

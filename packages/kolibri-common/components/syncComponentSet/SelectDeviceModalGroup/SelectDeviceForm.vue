@@ -120,7 +120,7 @@
       </KFixedGrid>
     </template>
 
-    <div class="under-buttons">
+    <KButtonGroup class="under-buttons">
       <slot name="underbuttons"></slot>
       <KButton
         v-show="!newDeviceButtonDisabled && !formDisabled"
@@ -129,7 +129,7 @@
         appearance="basic-link"
         @click="$emit('click_add_address')"
       />
-    </div>
+    </KButtonGroup>
   </KModal>
 
 </template>
@@ -138,13 +138,13 @@
 <script>
 
   import { computed } from 'vue';
-  import { useLocalStorage } from '@vueuse/core';
+  import { useLocalStorage, get } from '@vueuse/core';
   import find from 'lodash/find';
   import UiAlert from 'kolibri-design-system/lib/keen/UiAlert';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
   import commonSyncElements from 'kolibri-common/mixins/commonSyncElements';
   import pickBy from 'lodash/pickBy';
-  import { LocationTypes, UnreachableConnectionStatuses } from './constants';
+  import { UnreachableConnectionStatuses } from './constants';
   import useDeviceDeletion from './useDeviceDeletion.js';
   import {
     useDevicesWithFilter,
@@ -208,12 +208,8 @@
 
       const storageDeviceId = useLocalStorage('kolibri-lastSelectedNetworkLocationId', '');
 
-      const discoveredDevices = computed(() =>
-        devices.value.filter(d => d.location_type === LocationTypes.DYNAMIC),
-      );
-      const savedDevices = computed(() =>
-        devices.value.filter(d => d.location_type !== LocationTypes.DYNAMIC),
-      );
+      const discoveredDevices = computed(() => get(devices).filter(d => d.dynamic));
+      const savedDevices = computed(() => get(devices).filter(d => !d.dynamic));
 
       return {
         // useDevices
@@ -477,10 +473,8 @@
   }
 
   .under-buttons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin: 8px 0 2px;
+    /* align button group with the form content */
+    margin-left: -8px;
   }
 
 </style>

@@ -134,9 +134,9 @@
                   "
                 >
                   <AttemptLogItem
-                    v-if="attemptLogsBySection[index][qIndex]"
+                    v-if="attemptLogsForCurrentSection[qIndex]"
                     :isSurvey="isSurvey"
-                    :attemptLog="attemptLogsBySection[index][qIndex]"
+                    :attemptLog="attemptLogsForCurrentSection[qIndex]"
                     :questionNumber="qIndex + 1"
                     displayTag="p"
                   />
@@ -198,17 +198,10 @@
         return sections.value[currentSectionIndex.value];
       });
 
-      // Computed property for the attempt logs for each section
-      const attemptLogsBySection = computed(() => {
-        return sections.value.map(section => {
-          const start = section.startQuestionNumber;
-          return props.attemptLogs.slice(start, start + section.questions.length);
-        });
-      });
-
-      // For mobile view: returns attempt log for currently selected section
+      // Computed property for attempt logs of the current section
       const attemptLogsForCurrentSection = computed(() => {
-        return attemptLogsBySection.value[currentSectionIndex.value];
+        const start = currentSection.value.startQuestionNumber;
+        return props.attemptLogs.slice(start, start + currentSection.value.questions.length);
       });
 
       const questionSelectOptions = computed(() => {
@@ -264,7 +257,6 @@
         selectedQuestion,
         questionSelectOptions,
         attemptLogsForCurrentSection,
-        attemptLogsBySection,
         selectedAttemptLog,
       };
     },

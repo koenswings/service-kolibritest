@@ -30,7 +30,6 @@
   import { ERROR_CONSTANTS } from 'kolibri/constants';
   import CatchErrors from 'kolibri/utils/CatchErrors';
   import commonCoreStrings from 'kolibri/uiText/commonCoreStrings';
-  import useFacilities from 'kolibri-common/composables/useFacilities';
   import AssignmentDetailsModal from '../common/assignments/AssignmentDetailsModal';
   import commonCoach from '../common';
   import CoachImmersivePage from '../CoachImmersivePage';
@@ -48,11 +47,10 @@
       },
     },
     created() {
-      const { getFacilities, facilities } = useFacilities();
       const initClassInfoPromise = this.$store.dispatch('initClassInfo', this.classId);
       const getFacilitiesPromise =
-        this.isSuperuser && facilities.value.length === 0
-          ? getFacilities().catch(() => {})
+        this.isSuperuser && this.$store.state.core.facilities.length === 0
+          ? this.$store.dispatch('getFacilities').catch(() => {})
           : Promise.resolve();
 
       Promise.all([initClassInfoPromise, getFacilitiesPromise]);
