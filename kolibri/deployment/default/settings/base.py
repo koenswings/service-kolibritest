@@ -451,7 +451,7 @@ CSP_DEFAULT_SRC = ("'self'", "data:", "blob:", "wizardly-lovelace.local") + tupl
 )
 
 # Use a stricter script source policy to prevent blob: and data: from being used
-# CSP_SCRIPT_SRC = ("'self'",) + tuple(conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"])
+CSP_SCRIPT_SRC = ("'self'",) + tuple(conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"])
 
 # Allow inline styles, as we rely on them heavily in our templates
 # and the Aphrodite CSS in JS library generates inline styles

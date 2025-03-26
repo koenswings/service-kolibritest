@@ -43,6 +43,6 @@ SWAGGER_SETTINGS = {"DEFAULT_INFO": "kolibri.deployment.default.dev_urls.api_inf
 
 # Ensure that the CSP is set up to allow webpack-dev-server to be accessed during development
 # At the moment, this assumes the port will not change from 3000.
-CSP_DEFAULT_SRC += ("localhost:3000", "ws:")  # noqa F405
-CSP_SCRIPT_SRC += ("localhost:3000",)  # noqa F405
-CSP_STYLE_SRC += ("localhost:3000",)  # noqa F405
+CSP_DEFAULT_SRC += ("localhost:3000", "ws:", "wizardly-lovelace.local")  # noqa F405
+CSP_SCRIPT_SRC += ("localhost:3000", "wizardly-lovelace.local")  # noqa F405
+CSP_STYLE_SRC += ("localhost:3000", "wizardly-lovelace.local")  # noqa F405
