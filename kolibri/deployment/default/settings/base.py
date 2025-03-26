@@ -446,12 +446,12 @@ TESTING = False
 
 # Content Security Policy header settings
 # https://django-csp.readthedocs.io/en/latest/configuration.html
-CSP_DEFAULT_SRC = ("'self'", "data:", "blob:") + tuple(
+CSP_DEFAULT_SRC = ("'self'", "data:", "blob:", "wizardly-lovelace.local") + tuple(
     conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"]
 )
 
 # Use a stricter script source policy to prevent blob: and data: from being used
-CSP_SCRIPT_SRC = ("'self'",) + tuple(conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"])
+# CSP_SCRIPT_SRC = ("'self'",) + tuple(conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"])
 
 # Allow inline styles, as we rely on them heavily in our templates
 # and the Aphrodite CSS in JS library generates inline styles
