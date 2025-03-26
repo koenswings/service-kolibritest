@@ -446,7 +446,7 @@ TESTING = False
 
 # Content Security Policy header settings
 # https://django-csp.readthedocs.io/en/latest/configuration.html
-CSP_DEFAULT_SRC = ("'self'", "data:", "blob:", "wizardly-lovelace.local") + tuple(
+CSP_DEFAULT_SRC = ("'self'", "data:", "blob:", "wizardly-lovelace.local:3000") + tuple(
     conf.OPTIONS["Deployment"]["CSP_HOST_SOURCES"]
 )
 
